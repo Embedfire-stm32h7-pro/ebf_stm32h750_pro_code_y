@@ -106,7 +106,7 @@
 
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */
-/* #define VECT_TAB_SRAM */
+//#define VECT_TAB_SRAM
 #define VECT_TAB_OFFSET  0x00       /*!< Vector Table base offset field.
                                       This value must be a multiple of 0x200. */
 /******************************************************************************/
@@ -170,6 +170,7 @@ void SystemInit (void)
   #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
     SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
   #endif
+#ifndef SDRAM_Debug	
   /* Reset the RCC clock configuration to the default reset state ------------*/
   /* Set HSION bit */
   RCC->CR |= RCC_CR_HSION;
@@ -230,7 +231,11 @@ void SystemInit (void)
 #else
   SCB->VTOR = FLASH_BANK1_BASE | VECT_TAB_OFFSET;       /* Vector Table Relocation in Internal FLASH */
 #endif
+#endif
 
+#ifdef SDRAM_Debug
+	SCB->VTOR = 0x70000000 | VECT_TAB_OFFSET;       /* Vector Table Relocation in SDRAM */
+#endif
 }
 
 /**
