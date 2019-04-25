@@ -17,14 +17,15 @@
 #include "stm32h7xx.h"
 #include "main.h"
 #include "./led/bsp_led.h"
-#include "./delay/core_delay.h"   
+#include "./delay/core_delay.h" 
+#include "./mpu/bsp_mpu.h" 
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{
+{  
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
 	/* LED 端口初始化 */
@@ -130,11 +131,11 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  if(ret != HAL_OK)
-  {
+//  if(ret != HAL_OK)
+//  {
 
-    while(1) { ; }
-  }
+//    while(1) { ; }
+//  }
   
 	/* 选择PLL作为系统时钟源并配置总线时钟分频器 */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK  | \
