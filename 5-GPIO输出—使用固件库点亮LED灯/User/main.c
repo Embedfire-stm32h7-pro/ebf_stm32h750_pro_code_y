@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -45,10 +45,6 @@ int main(void)
 		LED3( ON );			 // 亮 
 		HAL_Delay(1000);
 		LED3( OFF );		  // 灭	
-		
-		LED4( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED4( OFF );		  // 灭	
 		
 		/*轮流显示 红绿蓝黄紫青白 颜色*/
 		LED_RED;
