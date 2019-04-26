@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   GPIO输入一按键检测
   ******************************************************************
   * @attention
   *
@@ -19,6 +19,8 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./key/bsp_key.h" 
+
 /**
   * @brief  主函数
   * @param  无
@@ -30,46 +32,23 @@ int main(void)
 	SystemClock_Config();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
+  /* 按键输入初始化 */
+  Key_GPIO_Config();
+  
 	/* 控制LED灯 */
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
-
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
-
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
+    /* 检测 KEY1 是否有输入 */
+		if (Key_Scan(KEY1_GPIO_PORT, KEY1_PIN) == KEY_ON)
+    {
+      LED2_TOGGLE;    // 翻转 LED2
+    }
+    
+    /* 检测 KEY2 是否有输入 */
+    if (Key_Scan(KEY2_GPIO_PORT, KEY2_PIN) == KEY_ON)
+    {
+      LED3_TOGGLE;    // 翻转 LED3
+    }
 	}
 }
 
