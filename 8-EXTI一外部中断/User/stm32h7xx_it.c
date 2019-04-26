@@ -36,7 +36,8 @@
 #include "stm32h7xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "./key/bsp_exti.h"
+#include "./led/bsp_led.h"   
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -184,5 +185,29 @@ void SysTick_Handler(void)
 
 /* USER CODE BEGIN 1 */
 
+void KEY1_IRQHandler(void)
+{
+  //确保是否产生了EXTI Line中断
+	if(__HAL_GPIO_EXTI_GET_IT(KEY1_INT_GPIO_PIN) != RESET) 
+	{
+		// LED1 取反		
+		LED1_TOGGLE;
+    
+    //清除中断标志位
+		__HAL_GPIO_EXTI_CLEAR_IT(KEY1_INT_GPIO_PIN);    
+	}  
+}
+
+void KEY2_IRQHandler(void)
+{
+  //确保是否产生了EXTI Line中断
+	if(__HAL_GPIO_EXTI_GET_IT(KEY2_INT_GPIO_PIN) != RESET) 
+	{
+		// LED2 取反		
+		LED2_TOGGLE;
+    //清除中断标志位
+		__HAL_GPIO_EXTI_CLEAR_IT(KEY2_INT_GPIO_PIN);     
+	}  
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

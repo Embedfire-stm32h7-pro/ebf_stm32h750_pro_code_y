@@ -3,8 +3,8 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @date    2019-xx-xx
+  * @brief   EXTI一外部中断
   ******************************************************************
   * @attention
   *
@@ -18,6 +18,8 @@
 #include "main.h"
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
+#include "./usart/bsp_debug_usart.h"
+#include "./key/bsp_exti.h"
 #include "./mpu/bsp_mpu.h" 
 /**
   * @brief  主函数
@@ -28,49 +30,16 @@ int main(void)
 {  
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+  HAL_Init();
+  DEBUG_USART_Config();
 	/* LED 端口初始化 */
-	LED_GPIO_Config();	
-	/* 控制LED灯 */
+	LED_GPIO_Config();
+  /* 中断初始化 */	
+  EXTI_Key_Config();
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
-
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
-
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
-	}
+    /* 中断服务函数中翻转 LED */
+  }
 }
 
 /**

@@ -822,6 +822,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1651,6 +1661,16 @@
               <FileName>bsp_mpu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
           </Files>
         </Group>
