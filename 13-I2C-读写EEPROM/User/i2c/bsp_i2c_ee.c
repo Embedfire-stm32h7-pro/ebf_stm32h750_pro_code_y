@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F767 开发板 
+  * 实验平台:秉火  STM32 H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -16,7 +16,7 @@
   */ 
 
 #include "./i2c/bsp_i2c_ee.h"
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 
 
 I2C_HandleTypeDef  I2C_Handle; 

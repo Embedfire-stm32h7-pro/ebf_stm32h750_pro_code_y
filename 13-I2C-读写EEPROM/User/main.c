@@ -3,8 +3,8 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @date    2019-xx-xx
+  * @brief   基本读写EEPROM
   ******************************************************************
   * @attention
   *
@@ -19,59 +19,92 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./usart/bsp_debug_usart.h"
+#include "./i2c/bsP_i2c_ee.h"
+
+#define  DATA_Size			256
+#define  EEP_Firstpage      0x00
+uint8_t I2c_Buf_Write[DATA_Size];
+uint8_t I2c_Buf_Read[DATA_Size];
+uint8_t I2C_Test(void);
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{  
+{ 
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
-	/* LED 端口初始化 */
-	LED_GPIO_Config();	
-	/* 控制LED灯 */
+
+	LED_GPIO_Config();
+	/* 配置串口1为：115200 8-N-1 */
+	DEBUG_USART_Config();	
+	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
+
+	printf("\r\n 这是一个I2C外设(AT24C02)读写测试例程 \r\n");
+
+	/* I2C 外设初(AT24C02)始化 */
+	I2C_EE_Init();
+	 
+	if(I2C_Test() ==1)
+	{
+			LED_GREEN;
+	}
+	else
+	{
+			LED_RED;
+	}
+
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
-
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
-
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
-	}
+			
+	}  
 }
+
+/**
+  * @brief  I2C(AT24C02)读写测试
+  * @param  无
+  * @retval 正常返回1 ，不正常返回0
+  */
+uint8_t I2C_Test(void)
+{
+	uint16_t i;
+
+	EEPROM_INFO("写入的数据");
+
+	for ( i=0; i<DATA_Size; i++ ) //填充缓冲
+	{   
+		I2c_Buf_Write[i] =i;
+		printf("0x%02X ", I2c_Buf_Write[i]);
+		if(i%16 == 15)    
+		printf("\n\r");    
+	}
+
+	//将I2c_Buf_Write中顺序递增的数据写入EERPOM中 
+	I2C_EE_BufferWrite( I2c_Buf_Write, EEP_Firstpage, DATA_Size);
+
+	EEPROM_INFO("读出的数据");
+	//将EEPROM读出数据顺序保持到I2c_Buf_Read中
+	I2C_EE_BufferRead(I2c_Buf_Read, EEP_Firstpage, DATA_Size); 
+	//将I2c_Buf_Read中的数据通过串口打印
+	for (i=0; i<DATA_Size; i++)
+	{	
+		if(I2c_Buf_Read[i] != I2c_Buf_Write[i])
+		{
+			printf("0x%02X ", I2c_Buf_Read[i]);
+			EEPROM_ERROR("错误:I2C EEPROM写入与读出的数据不一致");
+			return 0;
+		}
+		printf("0x%02X ", I2c_Buf_Read[i]);
+		if(i%16 == 15)    
+		printf("\n\r");
+
+	}
+	EEPROM_INFO("I2C(AT24C02)读写测试成功");
+	return 1;
+}
+
 
 /**
   * @brief  System Clock 配置
