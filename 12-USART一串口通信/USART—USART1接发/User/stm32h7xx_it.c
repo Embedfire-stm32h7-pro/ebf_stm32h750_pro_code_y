@@ -36,7 +36,7 @@
 #include "stm32h7xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "./usart/bsp_debug_usart.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -183,6 +183,22 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+/**
+* @brief 串口中断服务函数串口中断服务函数.
+*/
 
+extern uint8_t Rxflag;
+extern uint8_t ucTemp;
+
+void DEBUG_USART_IRQHandler(void)
+{
+	if(__HAL_UART_GET_IT( &UartHandle, UART_IT_RXNE ) != RESET)
+	{		
+        Rxflag=1;		
+        HAL_UART_Receive(&UartHandle, (uint8_t *)&ucTemp, 1, 1000);        
+	}
+    
+    HAL_UART_IRQHandler(&UartHandle);	 
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

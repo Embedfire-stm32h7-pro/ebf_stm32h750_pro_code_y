@@ -3,8 +3,8 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @date    2019-xx-xx
+  * @brief   USART—USART1指令控制RGB彩灯
   ******************************************************************
   * @attention
   *
@@ -19,6 +19,10 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./usart/bsp_usart.h"
+
+static void Show_Message(void);
+
 /**
   * @brief  主函数
   * @param  无
@@ -26,51 +30,84 @@
   */
 int main(void)
 {  
+    char ch;   
+    
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+    
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
+    
+    /* 配置串口1为：115200 8-N-1 */
+	UARTx_Config();
+  
+	/*调用printf函数，因为重定向了fputc，printf的内容会输出到串口*/
+	printf("\r\nPrintf方式输出：这是一个串口中断接收回显实验 \r\n");	
+	
+	/* 打印指令输入提示信息 */
+	Show_Message();
+    
 	/* 控制LED灯 */
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
+        /* 获取字符指令 */
+        ch=getchar();
+        printf("接收到字符：%c\n",ch);
 
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
+        /* 根据字符指令控制RGB彩灯颜色 */
+        switch(ch)
+        {
+            case '1':
+                LED_RED;
+            break;
+            case '2':
+                LED_GREEN;
+            break;
+            case '3':
+                LED_BLUE;
+            break;
+            case '4':
+                LED_YELLOW;
+            break;
+            case '5':
+                LED_PURPLE;
+            break;
+            case '6':
+                LED_CYAN;
+            break;
+            case '7':
+                LED_WHITE;
+            break;
+            case '8':
+                LED_RGBOFF;
+            break;
+            default:
+                /* 如果不是指定指令字符，打印提示信息 */
+            Show_Message();
+            break;      
+        }   
+    }
+}
 
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
-	}
+/**
+  * @brief  打印指令输入提示信息
+  * @param  无
+  * @retval 无
+  */
+static void Show_Message(void)
+{
+  printf("\r\n   这是一个通过串口通信指令控制RGB彩灯实验 \n");
+  printf("使用  USART1  参数为：%d 8-N-1 \n",UARTx_BAUDRATE);
+  printf("开发板接到指令后控制RGB彩灯颜色，指令对应如下：\n");
+  printf("   指令   ------ 彩灯颜色 \n");
+  printf("     1    ------    红 \n");
+  printf("     2    ------    绿 \n");
+  printf("     3    ------    蓝 \n");
+  printf("     4    ------    黄 \n");
+  printf("     5    ------    紫 \n");
+  printf("     6    ------    青 \n");
+  printf("     7    ------    白 \n");
+  printf("     8    ------    灭 \n");  
 }
 
 /**

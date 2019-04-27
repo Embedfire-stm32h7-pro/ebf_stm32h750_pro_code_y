@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   USART—USART1接发例程
   ******************************************************************
   * @attention
   *
@@ -19,6 +19,11 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./usart/bsp_debug_usart.h"
+
+volatile uint8_t Rxflag=0;
+uint8_t ucTemp;
+
 /**
   * @brief  主函数
   * @param  无
@@ -26,50 +31,51 @@
   */
 int main(void)
 {  
+    uint8_t ucaRxBuf[256];
+	uint16_t usRxCount=0; 
+    
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
-	/* 控制LED灯 */
+    /* 串口初始化 */
+    DEBUG_USART_Config();
+	/*调用printf函数，因为重定向了fputc，printf的内容会输出到串口*/
+	printf("\r\nPrintf方式输出：这是一个串口中断接收回显实验 \r\n");	
+	
+	/*自定义函数方式*/
+	Usart_SendString((uint8_t *)"自定义函数输出：这是一个串口中断接收回显实验\n" );
+	Usart_SendString((uint8_t *)"输入数据并以回车键结束\n" );
+    
+    /*STM32串口接收到字符后会进入stm32f4xx_it.c文件的中断服务函数，
+	*接收该数据，并标记Rxflag标志位。*/
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
-
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
-
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
+		/* 
+			接收DEBUG_USART口的数据，分析并处理 
+			可以将此段代码封装为一个函数，在主程序其它流程调用
+		*/
+		if(Rxflag)
+		{
+			if (usRxCount < sizeof(ucaRxBuf))
+			{
+				ucaRxBuf[usRxCount++] = ucTemp;
+			}
+			else
+			{
+				usRxCount = 0;
+			}
+			
+			/* 简单的通信协议，遇到回车换行符认为1个命令帧，可自行加其它判断实现自定义命令 */
+			/* 遇到换行字符，认为接收到一个命令 */
+			if (ucTemp == 0x0A)	/* 换行字符 */
+			{		
+				/*检测到有回车字符就把数据返回给上位机*/
+				HAL_UART_Transmit( &UartHandle, (uint8_t *)ucaRxBuf,usRxCount,1000 );
+				usRxCount = 0;
+			}
+			Rxflag=0;
+		}
 	}
 }
 

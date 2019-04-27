@@ -3,12 +3,12 @@
   * @file    bsp_debug_usart.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   使用串口2，重定向c库printf函数到usart端口
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F746 开发板  
+  * 实验平台:秉火  STM32 F750 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
