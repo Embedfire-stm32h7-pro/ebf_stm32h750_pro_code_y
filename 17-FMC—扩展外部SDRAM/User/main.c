@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   FMC-SDRAM
   ******************************************************************
   * @attention
   *
@@ -19,6 +19,23 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./sdram/bsp_sdram.h" 
+#include "./usart/bsp_debug_usart.h"
+
+void Delay(__IO uint32_t nCount); 
+
+void SDRAM_Check(void);
+uint32_t RadomBuffer[10000];
+
+uint32_t ReadBuffer[10000];
+
+
+
+uint32_t *pSDRAM;
+
+long long count=0,sdram_count=0;
+RNG_HandleTypeDef hrng;
+
 /**
   * @brief  主函数
   * @param  无
@@ -26,52 +43,99 @@
   */
 int main(void)
 {  
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
 	/* LED 端口初始化 */
-	LED_GPIO_Config();	
-	/* 控制LED灯 */
-	while (1)
+	LED_GPIO_Config();
+  /* 串口初始化 */
+  DEBUG_USART_Config();
+  
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
+
+	printf("\r\n野火STM32H750 SDRAM 读写测试例程\r\n");
+		
+	/*初始化SDRAM模块*/
+	SDRAM_Init();
+	/*蓝灯亮，表示正在读写SDRAM测试*/
+	LED_BLUE;
+
+  /*选择PLL输出作为RNG时钟源 */
+  
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG;
+  PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_PLL;
+  HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+
+  /*使能RNG时钟*/
+  __HAL_RCC_RNG_CLK_ENABLE();
+	/*初始化RNG模块产生随机数*/
+	hrng.Instance = RNG;
+	HAL_RNG_Init(&hrng);
+
+	printf("开始生成10000个SDRAM测试随机数\r\n");   
+	for(count=0;count<10000;count++)
+
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
+			HAL_RNG_GenerateRandomNumber(&hrng,&RadomBuffer[count]);
 
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
+	}    
+	printf("10000个SDRAM测试随机数生成完毕\r\n");
 
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
-	}
+	SDRAM_Check();
+  while(1);
 }
+
+void SDRAM_Check(void)
+{
+  pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
+	count=0;
+	printf("开始写入SDRAM\r\n");
+	for(sdram_count=0;sdram_count<SDRAM_SIZE/4;sdram_count++)
+	{
+		*pSDRAM=RadomBuffer[count];
+		count++;
+		pSDRAM++;
+		if(count>=10000)
+
+		{
+			count=0;
+		}
+	}
+	printf("写入总字节数:%d\r\n",(uint32_t)pSDRAM-SDRAM_BANK_ADDR);
+
+	count=0;
+	pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
+	printf("开始读取SDRAM并与原随机数比较\r\n");
+	sdram_count=0;
+	for(;sdram_count<SDRAM_SIZE/4;sdram_count++)
+	{
+		if(*pSDRAM != RadomBuffer[count])
+		{
+			printf("数据比较错误——退出~\r\n");
+			break;
+		}
+		count++;
+		pSDRAM++;
+		if(count>=10000)
+		{
+			count=0;
+		}
+	}
+
+	printf("比较通过总字节数:%d\r\n",(uint32_t)pSDRAM-SDRAM_BANK_ADDR);
+
+	if(sdram_count == SDRAM_SIZE/4)
+	{
+		LED_GREEN;
+		printf("SDRAM测试成功\r\n");
+	}
+	else
+	{
+		LED_RED;
+		printf("SDRAM测试失败\r\n");
+	}   
+}
+
 
 /**
   * @brief  System Clock 配置
