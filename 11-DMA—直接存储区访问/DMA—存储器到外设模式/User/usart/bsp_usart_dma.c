@@ -78,8 +78,11 @@ void USART_DMA_Config(void)
 {
   /*开启DMA时钟*/
   DEBUG_USART_DMA_CLK_ENABLE();
-
+  
   DMA_Handle.Instance = DEBUG_USART_DMA_STREAM;
+  /* Deinitialize the stream for new transfer */
+  HAL_DMA_DeInit(&DMA_Handle);
+  
   /*usart1 tx对应dma2，通道4，数据流7*/	
   DMA_Handle.Init.Request = DMA_REQUEST_USART1_TX; 
   /*方向：从内存到外设*/		
@@ -104,8 +107,6 @@ void USART_DMA_Config(void)
   /*外设突发传输 1个节拍*/
   DMA_Handle.Init.PeriphBurst = DMA_PBURST_SINGLE;    
   /*配置DMA2的数据流7*/		   
-//  /* Deinitialize the stream for new transfer */
-  HAL_DMA_DeInit(&DMA_Handle);
   /* Configure the DMA stream */
   HAL_DMA_Init(&DMA_Handle); 
   

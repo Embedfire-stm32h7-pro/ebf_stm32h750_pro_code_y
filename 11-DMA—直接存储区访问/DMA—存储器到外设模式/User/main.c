@@ -19,6 +19,11 @@
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./mpu/bsp_mpu.h" 
+#include "./usart/bsp_usart_dma.h"
+
+extern DMA_HandleTypeDef DMA_Handle;
+uint8_t SendBuff[SENDBUFF_SIZE];  
+
 /**
   * @brief  主函数
   * @param  无
@@ -26,50 +31,35 @@
   */
 int main(void)
 {  
+  uint16_t i;
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
-	/* 控制LED灯 */
+  /* 串口初始化 */
+  DEBUG_USART_Config();
+  /* DMA 初始化 */
+  USART_DMA_Config();
+	printf("\r\n USART1 DMA TX 测试 \r\n");
+  
+  /*填充将要发送的数据*/
+  for(i=0;i<SENDBUFF_SIZE;i++)
+  {
+    SendBuff[i]	 = 'A';    
+  }
+  
+
+  /*为演示DMA持续运行而CPU还能处理其它事情，持续使用DMA发送数据，量非常大，
+  *长时间运行可能会导致电脑端串口调试助手会卡死，鼠标乱飞的情况，
+  *或把DMA配置中的循环模式改为单次模式*/
+  
+   HAL_UART_Transmit_DMA (&UartHandle,(uint8_t *)SendBuff,SENDBUFF_SIZE);
+  /* 此时CPU是空闲的，可以干其他的事情 */  
+  //例如同时控制LED
 	while (1)
 	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
-
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
-
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
+		LED1_TOGGLE
+    HAL_Delay(1000);
 	}
 }
 

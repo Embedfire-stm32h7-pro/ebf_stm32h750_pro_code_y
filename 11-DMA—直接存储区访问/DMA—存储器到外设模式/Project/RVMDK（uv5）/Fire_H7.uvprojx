@@ -822,6 +822,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_usart_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_usart_dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1651,6 +1656,11 @@
               <FileName>bsp_mpu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_usart_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_usart_dma.c</FilePath>
             </File>
           </Files>
         </Group>
