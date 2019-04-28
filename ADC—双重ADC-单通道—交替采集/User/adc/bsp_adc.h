@@ -5,18 +5,18 @@
 
 
 //引脚定义
-#define RHEOSTAT_ADC_PIN                            GPIO_PIN_4                 
+#define RHEOSTAT_ADC_PIN                            GPIO_PIN_4
 #define RHEOSTAT_ADC_GPIO_PORT                      GPIOA                     
 #define RHEOSTAT_ADC_GPIO_CLK_ENABLE()              __GPIOA_CLK_ENABLE()
 
 // ADC_MASTER序号宏定义
 #define RHEOSTAT_ADC_MASTER                         ADC1
-#define RHEOSTAT_ADC_MASTER_CLK_ENABLE()            __ADC1_CLK_ENABLE()
+#define RHEOSTAT_ADC_MASTER_CLK_ENABLE()            __ADC12_CLK_ENABLE()
 #define RHEOSTAT_ADC_MASTER_CHANNEL                 ADC_CHANNEL_18
 
 // ADC_SLAVE序号宏定义
 #define RHEOSTAT_ADC_SLAVE                          ADC2
-#define RHEOSTAT_ADC_SLAVE_CLK_ENABLE()             __ADC2_CLK_ENABLE()
+#define RHEOSTAT_ADC_SLAVE_CLK_ENABLE()             __ADC12_CLK_ENABLE()
 #define RHEOSTAT_ADC_SLAVE_CHANNEL                  ADC_CHANNEL_18
 
 //DMA时钟使能
