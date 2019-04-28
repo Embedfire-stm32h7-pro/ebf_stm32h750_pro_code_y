@@ -4,11 +4,11 @@
   * @author  STMicroelectronics
   * @version V1.0
   * @date    2015-xx-xx
-  * @brief   基本定时器定时范例
+  * @brief   高级定时器互补输出
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F429 开发板  
+  * 实验平台:秉火  STM32 H750 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :https://fire-stm32.taobao.com
   *

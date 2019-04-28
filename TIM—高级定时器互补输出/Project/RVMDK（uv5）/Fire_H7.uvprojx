@@ -823,11 +823,6 @@
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_advance_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\tim\bsp_advance_tim.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_debug_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
@@ -836,6 +831,11 @@
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_advance_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\tim\bsp_advance_tim.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1668,11 +1668,6 @@
               <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_advance_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\tim\bsp_advance_tim.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_debug_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
@@ -1681,6 +1676,11 @@
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_advance_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\tim\bsp_advance_tim.c</FilePath>
             </File>
           </Files>
         </Group>

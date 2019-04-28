@@ -1518,8 +1518,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\tim\bsp_advance_tim.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_advance_tim.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\User\usart\bsp_debug_usart.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_debug_usart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1530,8 +1530,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\usart\bsp_debug_usart.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_debug_usart.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\User\key\bsp_key.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_key.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1542,8 +1542,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\key\bsp_key.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_key.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\User\tim\bsp_advance_tim.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_advance_tim.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
