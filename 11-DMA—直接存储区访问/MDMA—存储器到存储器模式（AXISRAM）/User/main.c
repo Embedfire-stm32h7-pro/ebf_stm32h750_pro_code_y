@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   USART—USART1接发例程
   ******************************************************************
   * @attention
   *
@@ -16,9 +16,8 @@
   */  
 #include "stm32h7xx.h"
 #include "main.h"
-#include "./led/bsp_led.h"
-#include "./delay/core_delay.h" 
-#include "./mpu/bsp_mpu.h" 
+#include "./led/bsp_led.h" 
+#include "./delay/core_delay.h"   
 /* 相关宏定义，使用存储器到存储器传输必须使用DMA2 */
 MDMA_HandleTypeDef     MDMA_Handle;
 
@@ -236,8 +235,7 @@ static void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
   HAL_StatusTypeDef ret = HAL_OK;
-  
-  /*使能供电配置更新 */
+    /*使能供电配置更新 */
   MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
 
   /* 当器件的时钟频率低于最大系统频率时，电压调节可以优化功耗，
@@ -263,11 +261,10 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-//  if(ret != HAL_OK)
-//  {
-
-//    while(1) { ; }
-//  }
+  if(ret != HAL_OK)
+  {
+    while(1) { ; }
+  }
   
 	/* 选择PLL作为系统时钟源并配置总线时钟分频器 */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK  | \
@@ -289,4 +286,6 @@ static void SystemClock_Config(void)
     while(1) { ; }
   }
 }
+
+
 /****************************END OF FILE***************************/

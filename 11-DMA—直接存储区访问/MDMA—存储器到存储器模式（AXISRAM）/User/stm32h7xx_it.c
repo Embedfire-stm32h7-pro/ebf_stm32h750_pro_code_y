@@ -36,7 +36,7 @@
 #include "stm32h7xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern MDMA_HandleTypeDef     MDMA_Handle;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -73,6 +73,7 @@ void HardFault_Handler(void)
 
   /* USER CODE END HardFault_IRQn 1 */
 }
+
 
 /**
 * @brief This function handles Memory management fault.
@@ -175,6 +176,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 1 */
 }
 
+
 /******************************************************************************/
 /* STM32H7xx Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */
@@ -183,6 +185,12 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+
+void MDMA_IRQHandler(void)
+{
+  /* Check the interrupt and clear flag */
+  HAL_MDMA_IRQHandler(&MDMA_Handle);
+}
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

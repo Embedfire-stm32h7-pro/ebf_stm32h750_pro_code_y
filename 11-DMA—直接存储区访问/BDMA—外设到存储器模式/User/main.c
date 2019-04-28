@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   BDMA——外设到存储器模式
   ******************************************************************
   * @attention
   *
@@ -16,61 +16,44 @@
   */  
 #include "stm32h7xx.h"
 #include "main.h"
-#include "./led/bsp_led.h"
-#include "./delay/core_delay.h" 
-#include "./mpu/bsp_mpu.h" 
+#include "./usart/bsp_debug_usart.h"
+#include "./adc/bsp_adc.h"
+#include "./delay/core_delay.h"   
+
+extern __IO uint16_t ADC_ConvertedValue;
+float ADC_vol;
+//简单的延时函数
+static void Delay(__IO uint32_t nCount)	 
+{
+	for(; nCount != 0; nCount--);
+}
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{  
+{
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
-	/* LED 端口初始化 */
-	LED_GPIO_Config();	
-	/* 控制LED灯 */
-	while (1)
-	{
-		LED1( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED1( OFF );		  // 灭
-		HAL_Delay(1000);
 
-		LED2( ON );			// 亮 
-		HAL_Delay(1000);
-		LED2( OFF );		  // 灭
+	/* 配置串口1为：115200 8-N-1 */
+	DEBUG_USART_Config();
+  
+  /* ADC初始化子程序 */ 
+  ADC_Init();
+  
+  while(1)
+	{	
+      Delay(0xffffee);
+      
+      printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
 
-		LED3( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED3( OFF );		  // 灭	
-		
-		/*轮流显示 红绿蓝黄紫青白 颜色*/
-		LED_RED;
-		HAL_Delay(1000);
-		
-		LED_GREEN;
-		HAL_Delay(1000);
-		
-		LED_BLUE;
-		HAL_Delay(1000);
-		
-		LED_YELLOW;
-		HAL_Delay(1000);
-		
-		LED_PURPLE;
-		HAL_Delay(1000);
-						
-		LED_CYAN;
-		HAL_Delay(1000);
-		
-		LED_WHITE;
-		HAL_Delay(1000);
-		
-		LED_RGBOFF;
-		HAL_Delay(1000);
-	}
+      printf("\r\n The current AD value = %f V \r\n", ADC_vol);
+    
+      /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
+      ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
+	}  
 }
 
 /**
@@ -100,8 +83,7 @@ static void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
   HAL_StatusTypeDef ret = HAL_OK;
-  
-  /*使能供电配置更新 */
+    /*使能供电配置更新 */
   MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
 
   /* 当器件的时钟频率低于最大系统频率时，电压调节可以优化功耗，
@@ -127,11 +109,10 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-//  if(ret != HAL_OK)
-//  {
-
-//    while(1) { ; }
-//  }
+  if(ret != HAL_OK)
+  {
+    while(1) { ; }
+  }
   
 	/* 选择PLL作为系统时钟源并配置总线时钟分频器 */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK  | \

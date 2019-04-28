@@ -34,9 +34,9 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_it.h"
-
+#include "./usart/bsp_debug_usart.h"
 /* USER CODE BEGIN 0 */
-
+extern ADC_HandleTypeDef ADC_Handle;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -72,6 +72,11 @@ void HardFault_Handler(void)
   /* USER CODE BEGIN HardFault_IRQn 1 */
 
   /* USER CODE END HardFault_IRQn 1 */
+}
+
+__asm void wait()
+{
+  BX lr;
 }
 
 /**
@@ -168,9 +173,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_SYSTICK_IRQHandler();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
+
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -184,5 +187,29 @@ void SysTick_Handler(void)
 
 /* USER CODE BEGIN 1 */
 
+void DEBUG_USART_IRQHandler(void)
+{
+	
+}
+            
+            
+/**
+  * @brief  ADC中断服务函数
+  * @param  无
+  * @retval 无
+  */  
+//void ADC_IRQHandler(void)
+//{    
+//    HAL_ADC_IRQHandler(&ADC1_Handle); 
+//    
+//}
+
+/**
+* @brief This function handles DMA1 stream1 global interrupt.
+*/
+void RHEOSTAT_ADC_DMA_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
