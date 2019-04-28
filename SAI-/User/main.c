@@ -96,10 +96,7 @@ int main(void)
  
   RecorderDemo();
   
-  while(1)
-  {
-      
-  }
+  while(1);
 }
 /**
   * @brief  System Clock ≈‰÷√

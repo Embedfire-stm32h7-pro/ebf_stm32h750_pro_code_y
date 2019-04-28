@@ -135,7 +135,7 @@ void StartPlay(const char *filename)
 	
 	SAIxA_Tx_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
 //	I2Sxext_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
-	
+//	
 //	I2Sxext_RX_DMA_Init((uint32_t)&recplaybuf[0],(uint32_t)&recplaybuf[1],1);
 //	
 //  I2Sxext_Recorde_Stop();
@@ -299,7 +299,7 @@ void RecorderDemo(void)
 				ucRefresh = 1;
 			}
 			/*  TouchPAD开始回放录音  */
-			if(Key_Scan(KEY1_GPIO_PORT,KEY1_PIN)==KEY_ON)
+			if(TPAD_Scan(0)==1)
 			{			
 				/* 开始回放 */
         StartPlay(recfilename);
@@ -309,7 +309,7 @@ void RecorderDemo(void)
 		else
 		{			
 			/*  KEY1停止录音或回放  */
-			if(Key_Scan(KEY2_GPIO_PORT,KEY2_PIN)==KEY_ON)
+			if(Key_Scan(KEY1_GPIO_PORT,KEY1_PIN)==KEY_ON)
 			{
 				/* 对于录音，需要把WAV文件内容填充完整 */
 				if(Recorder.ucStatus == STA_RECORDING)
