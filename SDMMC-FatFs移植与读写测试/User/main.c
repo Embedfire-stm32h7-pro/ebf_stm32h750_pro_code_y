@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   用V1.2.0版本库建的工程模板
+  * @brief   SDMMC-FatFS移植与读写测试
   ******************************************************************
   * @attention
   *
