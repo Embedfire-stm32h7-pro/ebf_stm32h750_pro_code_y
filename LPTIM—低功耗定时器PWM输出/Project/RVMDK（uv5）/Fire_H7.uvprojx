@@ -827,6 +827,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_lptim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\lptim\bsp_lptim.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1661,6 +1671,16 @@
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_lptim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\lptim\bsp_lptim.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
           </Files>
         </Group>
