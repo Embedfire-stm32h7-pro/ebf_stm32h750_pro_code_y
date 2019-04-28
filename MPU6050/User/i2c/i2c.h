@@ -7,7 +7,7 @@ Purpose :
 /****************************** Includes *****************************/
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 /****************************** Defines *******************************/
 
 #define I2C_OWN_ADDRESS           0x00

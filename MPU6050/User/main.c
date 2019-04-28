@@ -17,7 +17,7 @@
   
 #include "stm32h7xx.h"
 #include "./led/bsp_led.h"
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 #include <stdlib.h>
 #include "main.h"
 #include "./i2c/i2c.h"
@@ -79,7 +79,7 @@ int main(void)
 	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_BLACK);	
 #endif
   /*初始化USART1*/
-	UARTx_Config(); 
+	DEBUG_USART_Config(); 
 		
 	//初始化 I2C
 	I2cMaster_Init(); 

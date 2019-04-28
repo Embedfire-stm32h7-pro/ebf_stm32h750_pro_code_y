@@ -1,5 +1,5 @@
 #include "./mpu6050/mpu6050.h"
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 #include "./i2c/i2c.h"
 
 
