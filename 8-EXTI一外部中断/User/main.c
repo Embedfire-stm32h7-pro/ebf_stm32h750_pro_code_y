@@ -30,6 +30,12 @@ int main(void)
 {  
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+  
+//  SCB_EnableICache();    // 使能指令 Cache
+//  SCB_EnableDCache();    // 使能数据 Cache
+//  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
   HAL_Init();
   DEBUG_USART_Config();
 	/* LED 端口初始化 */

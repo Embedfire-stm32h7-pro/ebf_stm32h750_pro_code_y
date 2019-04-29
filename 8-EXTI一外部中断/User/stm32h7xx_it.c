@@ -195,7 +195,7 @@ void KEY1_IRQHandler(void)
     
     //清除中断标志位
 		__HAL_GPIO_EXTI_CLEAR_IT(KEY1_INT_GPIO_PIN);    
-	}  
+	}   
 }
 
 void KEY2_IRQHandler(void)

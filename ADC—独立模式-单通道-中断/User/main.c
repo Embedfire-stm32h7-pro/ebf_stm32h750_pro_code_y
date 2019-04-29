@@ -18,7 +18,7 @@
 #include "main.h"
 #include "./usart/bsp_debug_usart.h"
 #include "./adc/bsp_adc.h"
-  
+#include "./mpu/bsp_mpu.h" 
 #include "./delay/core_delay.h"  
 
 extern uint16_t ADC_ConvertedValue;
@@ -38,7 +38,12 @@ int main(void)
 {
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
-
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
   

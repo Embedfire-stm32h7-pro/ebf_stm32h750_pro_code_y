@@ -4,60 +4,65 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   LTDC—液晶显示英文
+  * @brief   电容触摸屏-触摸画板
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H750 开发板 
+  * 实验平台:野火 STM32H743开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
   ******************************************************************
   */  
 #include "stm32h7xx.h"
-#include <string.h>
 #include "main.h"
-#include "./led/bsp_led.h"
-#include "./delay/core_delay.h" 
-#include "./mpu/bsp_mpu.h" 
-#include "./sdram/bsp_sdram.h" 
+#include "./led/bsp_led.h" 
 #include "./usart/bsp_debug_usart.h"
+#include "./sdram/bsp_sdram.h" 
 #include "./lcd/bsp_lcd.h"
+#include "./touch/bsp_i2c_touch.h"
+#include "./touch/bsp_touch_gtxx.h"
+#include "./touch/palette.h"
+#include "./delay/core_delay.h" 
+#include "./touch/palette.h"
+#include "./mpu/bsp_mpu.h" 
+
+extern void GTP_TouchProcess(void);
 
 void Delay(__IO uint32_t nCount); 
 
 void LCD_Test(void);
-
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{  
-  /* Enable I-Cache */
-  SCB_EnableICache();
-  /* Enable D-Cache */
-  SCB_EnableDCache();
-  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+{   
+
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+   
+  
 	/* 配置串口1为：115200 8-N-1 */
-	DEBUG_USART_Config();	
-	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示英文测试例程\r\n");
-	/*蓝灯亮*/
-	LED_BLUE;
+	DEBUG_USART_Config();		
+	printf("\r\n欢迎使用野火STM32H743开发板。\r\n");		 
+	printf("\r\n野火STM32H743 触摸画板测试例程\r\n");
+  /* 初始化触摸屏 */
+  GTP_Init_Panel(); 
 	/* LCD 端口初始化 */ 
 	LCD_Init();
 	/* LCD 第一层初始化 */ 
-	LCD_LayerInit(0, LCD_FB_START_ADDRESS,ARGB8888);
+	LCD_LayerInit(0, LCD_FB_START_ADDRESS,RGB888);
 	/* LCD 第二层初始化 */ 
-	LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),ARGB8888);
+	LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),RGB888);
 	/* 使能LCD，包括开背光 */ 
 	LCD_DisplayOn(); 
 
@@ -74,189 +79,19 @@ int main(void)
 	LCD_Clear(LCD_COLOR_TRANSPARENT);
 
 	/* 配置第一和第二层的透明度,最小值为0，最大值为255*/
-	LCD_SetTransparency(0, 255);
-	LCD_SetTransparency(1, 0);
+	LCD_SetTransparency(0, 0);
+	LCD_SetTransparency(1, 255);
+	/*调用画板函数*/
+	Palette_Init();
 
+  Delay(0xfff);
 	while(1)
 	{		
-		LCD_Test(); 
+//    GTP_TouchProcess();  
+//    HAL_Delay(10);
+
 	}
 }
-
-/*用于测试各种液晶的函数*/
-void LCD_Test(void)
-{
-	/*演示显示变量*/
-	static uint8_t testCNT = 0;	
-	char dispBuff[100];
-	
-  /* 选择LCD第一层 */
-  LCD_SelectLayer(0);
-	
-	/* 清屏，显示全黑 */
-	LCD_Clear(LCD_COLOR_BLACK);	
-	/*设置字体颜色及字体的背景颜色(此处的背景不是指LCD的背景层！注意区分)*/
-	LCD_SetColors(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
-	/*选择字体*/
-	LCD_SetFont(&LCD_DEFAULT_FONT);
-
-	LCD_DisplayStringLine(1,(uint8_t* )"BH 5.0 inch LCD para:");
-	LCD_DisplayStringLine(2,(uint8_t* )"Image resolution:800x480 px");
-	LCD_DisplayStringLine(3,(uint8_t* )"Touch pad:5 point touch supported");
-	LCD_DisplayStringLine(4,(uint8_t* )"Use STM32-LTDC directed driver,");
-	LCD_DisplayStringLine(5,(uint8_t* )"no need extern driver,RGB888,24bits data bus");
-	LCD_DisplayStringLine(6,(uint8_t* )"Touch pad use IIC to communicate");
-	
-	{		
-	testCNT++;
-	memset(dispBuff,0,100);
-	/*使用c标准库把变量转化成字符串*/
-	sprintf(dispBuff,"Display value demo: testCount = %d ",testCNT);
-	LCD_ClearLine(7);
-	/*设置字体颜色及字体的背景颜色(此处的背景不是指LCD的背景层！注意区分)*/
-	LCD_SetColors(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
-	/*然后显示该字符串即可，其它变量也是这样处理*/
-	LCD_DisplayStringLine(7,(uint8_t* )dispBuff);
-
-
-	/* 画直线 */
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-
-	LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Draw line:");
-
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_BLACK);
-	LCD_DrawLine(50,250,750,250);  
-	LCD_DrawLine(50,300,750,300);
-
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
-	LCD_DrawLine(300,250,400,400);  
-	LCD_DrawLine(600,250,600,400);
-
-	Delay(0xFFFFFFF);
-
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-
-
-	/*画矩形*/
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Draw Rect:");
-
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_BLACK);
-	LCD_DrawRect(200,250,200,100);
-
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
-	LCD_DrawRect(350,250,200,50);
-
-	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
-	LCD_DrawRect(200,350,50,200);
-
-	Delay(0xFFFFFFF);
-
-
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-
-
-	/*填充矩形*/
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Draw Full Rect:");
-
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_BLACK);
-	LCD_FillRect(200,250,200,100);
-
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
-	LCD_FillRect(350,250,200,50);
-
-	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
-	LCD_FillRect(200,350,50,200);
-
-	Delay(0xFFFFFFF);
-
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-
-	/* 画圆 */
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_ClearLine(8);LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Draw circle:");
-
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_RED);
-	LCD_DrawCircle(200,350,50);
-
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_GREEN);
-	LCD_DrawCircle(350,350,75);
-
-	Delay(0xFFFFFFF);
-
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-
-
-	/*填充圆*/
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Draw full circle:");
-
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_BLACK);
-	LCD_FillCircle(300,350,50);
-
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
-	LCD_FillCircle(450,350,75);
-
-	Delay(0xFFFFFFF);
-
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-
-	LCD_ClearLine(8);
-	
-	/*透明效果 前景层操作*/
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_ClearLine(8);
-	LCD_DisplayStringLine(8,(uint8_t* )"Transparency effect:");
-	
-	/*设置前景层不透明度*/
-	LCD_SetTransparency(1, 100);
-
-  /* 选择LCD第一层 */
-  LCD_SelectLayer(1);
-	
-	/* 清屏，显示全黑 */
-	LCD_Clear(LCD_COLOR_BLACK);	
-	/*在前景画一个红色圆*/
-	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_TRANSPARENT);
-	LCD_FillCircle(400,350,75);
-	
-	Delay(0xFFFFFFF);
-	
-	/*透明效果 背景层操作*/
-
-	/* 选择LCD背景层 */
-	LCD_SelectLayer(0);	
-	LCD_Clear(LCD_COLOR_BLACK);		
-	/*设置背景层不透明*/
-	LCD_SetTransparency(1, 0);
-	
-
-	/*在背景画一个绿色圆*/
-	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
-	LCD_FillCircle(450,350,75);
-	
-	/*在背景画一个蓝色圆*/
-	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
-	LCD_FillCircle(350,350,75);
-	
-	Delay(0xFFFFFFF);
-	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
-	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-	}
-
-}
-
 
 /**
   * @brief  System Clock 配置
@@ -307,16 +142,15 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 160;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 2;
  
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-//  if(ret != HAL_OK)
-//  {
-
-//    while(1) { ; }
-//  }
+  if(ret != HAL_OK)
+  {
+    while(1) { ; }
+  }
   
 	/* 选择PLL作为系统时钟源并配置总线时钟分频器 */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK  | \
@@ -343,5 +177,4 @@ void Delay(__IO uint32_t nCount)	 //简单的延时函数
 {
 	for(; nCount != 0; nCount--);
 }
-
 /****************************END OF FILE***************************/

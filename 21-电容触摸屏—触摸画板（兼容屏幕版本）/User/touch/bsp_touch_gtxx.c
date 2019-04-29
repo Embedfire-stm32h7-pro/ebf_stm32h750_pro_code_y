@@ -20,6 +20,7 @@
 #include "./touch/bsp_touch_gtxx.h"
 #include "./touch/bsp_i2c_touch.h"
 #include "./lcd/bsp_lcd.h"
+#include "./led/bsp_led.h" 
 #include "./touch/palette.h"
 #include "./delay/core_delay.h"   
 
@@ -827,7 +828,8 @@ int32_t GTP_Init_Panel(void)
 	
 		
 	 /* emXGUI示例中不使能中断 */
-		I2C_GTP_IRQEnable();
+		I2C_GTP_IRQEnable();    // 使用中断
+//    I2C_GTP_IRQDisable();    // 禁用中断 使用轮询
 	
     GTP_Get_Info();
 		

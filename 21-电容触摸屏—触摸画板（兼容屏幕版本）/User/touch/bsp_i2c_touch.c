@@ -18,6 +18,7 @@
 #include "./touch/bsp_i2c_touch.h"
 #include "./touch/bsp_touch_gtxx.h"
 #include "./usart/bsp_debug_usart.h"
+#include "./delay/core_delay.h"   
 
 
 /* STM32 I2C 快速模式 */
@@ -173,21 +174,21 @@ void I2C_ResetChip(void)
 
 	/*复位为低电平，为初始化做准备*/
 	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_RESET);
-	Delay(0x01FFFFFF);
+	CPU_TS_Tmr_Delay_US(10);
 
 	/*拉高一段时间，进行初始化*/
 	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_SET);
-	Delay(0x01FFFFFF);
+	HAL_Delay(20);
 
 	  /*初始化GT9157,rst为高电平，int为低电平，则gt9157的设备地址被配置为0xBA*/
 
-	/*复位为低电平，为初始化做准备*/
-	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_RESET);
-	Delay(0x01FFFFFF);
+//	/*复位为低电平，为初始化做准备*/
+//	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_RESET);
+//	Delay(0x0FFFF);
 
-	/*拉高一段时间，进行初始化*/
-	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_SET);
-	Delay(0x01FFFFFF);
+//	/*拉高一段时间，进行初始化*/
+//	HAL_GPIO_WritePin (GTP_RST_GPIO_PORT,GTP_RST_GPIO_PIN,GPIO_PIN_SET);
+//	Delay(0x0FFFF);
 
 	/*把INT引脚设置为浮空输入模式，以便接收触摸中断信号*/
 	GPIO_InitStructure.Pin = GTP_INT_GPIO_PIN;
