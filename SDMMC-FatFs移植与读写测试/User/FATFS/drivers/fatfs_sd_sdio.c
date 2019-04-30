@@ -92,7 +92,7 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
   
   alignedAddr = (uint32_t)buff & ~0x1F;
   //更新相应的DCache
-  SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+//  SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
   if(HAL_SD_ReadBlocks_DMA(&uSdHandle, (uint8_t*)buff,
                            (uint32_t) (sector),
                            count) == HAL_OK)
@@ -142,7 +142,6 @@ DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
 {
     DRESULT res = RES_ERROR;
     uint32_t timeout;
-    uint32_t alignedAddr;
   
     TX_Flag = 0;
   
@@ -164,9 +163,8 @@ DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
       return res;
     }	
   
-    alignedAddr = (uint32_t)buff & ~0x1F;
     //更新相应的DCache
-    SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+//    SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
     if(HAL_SD_WriteBlocks_DMA(&uSdHandle, (uint8_t*)buff,
                              (uint32_t) (sector),
                              count) == HAL_OK)
@@ -192,7 +190,7 @@ DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
           {
             res = RES_OK;
             //使相应的DCache无效
-            SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+//            SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
 
              break;
           }
@@ -238,7 +236,7 @@ DRESULT SD_ioctl(BYTE lun,BYTE cmd, void *buff){
     default:
       res = RES_PARERR;
     }
-    return RES_OK;
+    return res;
 }
 /*****************************END OF FILE****************************/
 

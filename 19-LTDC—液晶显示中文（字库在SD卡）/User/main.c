@@ -20,6 +20,7 @@
 #include "./usart/bsp_debug_usart.h"
 #include "./sdram/bsp_sdram.h" 
 #include "./lcd/bsp_lcd.h"
+#include "./mpu/bsp_mpu.h" 
 #include "string.h"
 
 void Delay(__IO uint32_t nCount); 
@@ -32,24 +33,23 @@ void LCD_Test(void);
   */
 int main(void)
 {   
-  /* Enable I-Cache */
-  SCB_EnableICache();
-
-  /* Enable D-Cache */
-  SCB_EnableDCache();
-
-  //将Cache设置write-through方式
-  SCB->CACR|=1<<2;  
-  
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+  
+  /* 配置 MPU */
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
+  
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();	
 	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
+	printf("\r\n 欢迎使用野火 STM32 H750 开发板。\r\n");		 
+	printf("\r\n野火 STM32H750 LTDC液晶显示中文测试例程\r\n");
 	/*蓝灯亮*/
 	LED_BLUE;
 	/* LCD 端口初始化 */ 

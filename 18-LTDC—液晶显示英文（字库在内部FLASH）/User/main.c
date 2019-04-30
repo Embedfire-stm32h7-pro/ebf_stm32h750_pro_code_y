@@ -35,14 +35,16 @@ void LCD_Test(void);
   */
 int main(void)
 {  
-  /* Enable I-Cache */
-  SCB_EnableICache();
-  /* Enable D-Cache */
-  SCB_EnableDCache();
-  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+  
+  /* 配置 MPU */
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
+  
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
