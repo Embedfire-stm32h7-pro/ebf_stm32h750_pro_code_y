@@ -45,10 +45,12 @@ int main(void)
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
   
-  SCB_EnableICache();    // 使能指令 Cache
-  SCB_EnableDCache();    // 使能数据 Cache
+  /* 配置 MPU */
   Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
   Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
    
   
 	/* 配置串口1为：115200 8-N-1 */
@@ -88,7 +90,7 @@ int main(void)
 	while(1)
 	{		
 //    GTP_TouchProcess();  
-//    HAL_Delay(10);
+//    HAL_Delay(20);
 
 	}
 }

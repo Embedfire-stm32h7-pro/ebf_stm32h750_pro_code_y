@@ -28,6 +28,8 @@
 #include "ff.h"
 #include "ff_gen_drv.h"
 #include "sd_diskio.h"
+#include "./mpu/bsp_mpu.h" 
+
 /**
   ******************************************************************************
   *                              定义变量
@@ -66,8 +68,15 @@ int main(void)
   FRESULT result; 
   /* 系统时钟初始化成400MHz */
   SystemClock_Config();
+  
+  /* 配置 MPU */
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
+  
   HAL_Init();
-  CPU_CACHE_Enable();
   Key_GPIO_Config();
   LED_GPIO_Config();
   /*  初始化电容按键  */

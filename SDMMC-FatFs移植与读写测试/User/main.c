@@ -20,6 +20,7 @@
 #include "./usart/bsp_debug_usart.h"
 #include "./sd_card/bsp_sdio_sd.h"
 #include "./key/bsp_key.h" 
+#include "./mpu/bsp_mpu.h" 
 #include "./delay/core_delay.h"  
 /* FatFs includes component */
 #include "ff.h"
@@ -67,7 +68,12 @@ int main(void)
     /* 系统时钟初始化成400MHz */
     SystemClock_Config();
   
-    CPU_CACHE_Enable();
+  /* 配置 MPU*/
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
   
     LED_GPIO_Config();
     LED_BLUE;	

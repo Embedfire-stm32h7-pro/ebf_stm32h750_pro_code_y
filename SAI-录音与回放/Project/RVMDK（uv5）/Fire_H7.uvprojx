@@ -857,6 +857,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\touch_pad\bsp_touchpad.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1747,6 +1752,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\touch_pad\bsp_touchpad.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2636,6 +2646,11 @@
               <FileName>bsp_touchpad.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\touch_pad\bsp_touchpad.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\mpu\bsp_mpu.c</FilePath>
             </File>
           </Files>
         </Group>

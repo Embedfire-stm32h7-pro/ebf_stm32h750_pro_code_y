@@ -42,9 +42,18 @@ void Delay(uint32_t times)
   */
 int main(void)
 { 
-
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+  
+  /* 默认不配置 MPU，若需要更高性能，当配置 MPU 后，使用 
+   DMA 时需注意 Cache 与 内存内容一致性的问题，
+   具体注意事项请参考配套教程的 MPU 配置相关章节 */
+//  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  
+  SCB_EnableICache();    // 使能指令 Cache
+//  SCB_EnableDCache();    // 使能数据 Cache
+  
 	/* 初始化串口 */
 	DEBUG_USART_Config();
   /* 初始化基本定时器定时，1s产生一次中断 */
