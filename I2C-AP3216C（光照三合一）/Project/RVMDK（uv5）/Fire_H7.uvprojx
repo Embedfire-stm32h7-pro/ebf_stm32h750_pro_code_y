@@ -828,14 +828,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_key.c</FileName>
+              <FileName>ap3216c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\key\bsp_key.c</FilePath>
+              <FilePath>..\..\User\ap3216c\ap3216c.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_485.c</FileName>
+              <FileName>bsp_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\485\bsp_485.c</FilePath>
+              <FilePath>..\..\User\i2c\bsp_i2c.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1673,14 +1673,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_key.c</FileName>
+              <FileName>ap3216c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\key\bsp_key.c</FilePath>
+              <FilePath>..\..\User\ap3216c\ap3216c.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_485.c</FileName>
+              <FileName>bsp_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\485\bsp_485.c</FilePath>
+              <FilePath>..\..\User\i2c\bsp_i2c.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2518,14 +2518,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_key.c</FileName>
+              <FileName>ap3216c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\key\bsp_key.c</FilePath>
+              <FilePath>..\..\User\ap3216c\ap3216c.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_485.c</FileName>
+              <FileName>bsp_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\485\bsp_485.c</FilePath>
+              <FilePath>..\..\User\i2c\bsp_i2c.c</FilePath>
             </File>
           </Files>
         </Group>

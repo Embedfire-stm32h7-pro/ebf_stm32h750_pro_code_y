@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32 H743 开发板 
+  * 实验平台:野火 STM32 H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -17,7 +17,7 @@
 
 #include "main.h"
 #include "stm32h7xx.h"
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 #include "./led/bsp_led.h"
 #include "./delay/core_delay.h" 
 #include "./i2c/bsp_i2c.h"
@@ -39,12 +39,13 @@ int main(void)
   HAL_Init();        
   /* 配置系统时钟为400 MHz */ 
   SystemClock_Config();
+  LED_GPIO_Config();
   /* 初始化内核延时 */
   HAL_InitTick(5);
   /*初始化USART 配置模式为 115200 8-N-1，中断接收*/
-  UARTx_Config();
+  DEBUG_USART_Config();
   
-  printf("\r\n 欢迎使用野火 STM32 H743 开发板。\r\n");	
+  printf("\r\n 欢迎使用野火 STM32 H750 开发板。\r\n");	
   printf("\r\n 这是一个三合一光照传感器测试例程 \r\n");
   
   printf(" 芯片初始化中.....\n");
@@ -80,7 +81,7 @@ int main(void)
     
     if (IntStatus >> 1 & 0x1)
       printf("PS 产生中断\n");
-    
+    LED2_TOGGLE;
     HAL_Delay(200);
   }
 }
