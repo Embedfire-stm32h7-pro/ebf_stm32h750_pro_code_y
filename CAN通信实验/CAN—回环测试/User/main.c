@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -48,8 +48,8 @@ int main(void)
 	Key_GPIO_Config();
 	
 	CAN_Config();
-	printf("\r\n欢迎使用野火 STM32 H743 开发板。\r\n");	
-	printf("\r\n 野火H743 CAN通讯实验例程\r\n");			
+	printf("\r\n欢迎使用野火 STM32 H750 开发板。\r\n");	
+	printf("\r\n 野火 H750 CAN通讯实验例程\r\n");			
 	printf("\r\n 实验步骤：\r\n");
 	printf("\r\n 1.本实验为回环测试，只需一块开发板即可\r\n");
 	printf("\r\n 2.跳线帽5v --- C/4-5V 也不用接（多机需要）\r\n");
