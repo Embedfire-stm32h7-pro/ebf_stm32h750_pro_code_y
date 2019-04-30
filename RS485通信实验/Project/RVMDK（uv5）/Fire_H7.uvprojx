@@ -828,14 +828,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\can\bsp_can.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\485\bsp_485.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1673,14 +1673,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\can\bsp_can.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\485\bsp_485.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2518,14 +2518,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\can\bsp_can.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\485\bsp_485.c</FilePath>
             </File>
           </Files>
         </Group>

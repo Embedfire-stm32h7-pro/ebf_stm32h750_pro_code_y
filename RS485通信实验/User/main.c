@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743 开发板 
+  * 实验平台:野火 STM32H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -57,8 +57,8 @@ int main(void)
 	/* 初始化独立按键 */
 	Key_GPIO_Config();
 	
-	printf("\r\n 欢迎使用野火 STM32F734-挑战者 开发板。\r\n");
-  printf("\r\n 野火 STM32F734-挑战者 485通讯实验例程\r\n");
+	printf("\r\n 欢迎使用野火 STM32H750-挑战者 开发板。\r\n");
+  printf("\r\n 野火 STM32H750 485通讯实验例程\r\n");
 	
 	printf("\r\n 实验步骤：\r\n");
 
