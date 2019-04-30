@@ -3,12 +3,12 @@
   * @file    bsp_can.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   can驱动（回环模式）
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火STM32 H743开发板  
+  * 实验平台:野火STM32 H750 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *

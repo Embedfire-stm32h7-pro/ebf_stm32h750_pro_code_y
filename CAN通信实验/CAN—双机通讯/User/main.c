@@ -3,12 +3,12 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2018-xx-xx
+  * @date    2019-xx-xx
   * @brief   CAN双机测试实验
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -47,7 +47,7 @@ int main(void)
 	Key_GPIO_Config();
 	
 	CAN_Config();
-	printf("\r\n欢迎使用野火  STM32 H743 开发板。\r\n");	
+	printf("\r\n欢迎使用野火  STM32 H750 开发板。\r\n");	
 	printf("\r\n 野火H743 CAN通讯实验例程\r\n");			
 	printf("\r\n 实验步骤：\r\n");
 

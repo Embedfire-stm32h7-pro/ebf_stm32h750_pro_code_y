@@ -828,9 +828,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_i2c_ee.c</FileName>
+              <FileName>bsp_can.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\i2c\bsp_i2c_ee.c</FilePath>
+              <FilePath>..\..\User\can\bsp_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1668,9 +1673,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_i2c_ee.c</FileName>
+              <FileName>bsp_can.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\i2c\bsp_i2c_ee.c</FilePath>
+              <FilePath>..\..\User\can\bsp_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2508,9 +2518,14 @@
               <FilePath>..\..\User\usart\bsp_debug_usart.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_i2c_ee.c</FileName>
+              <FileName>bsp_can.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\User\i2c\bsp_i2c_ee.c</FilePath>
+              <FilePath>..\..\User\can\bsp_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -832,6 +832,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\can\bsp_can.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1672,6 +1677,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\can\bsp_can.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2511,6 +2521,11 @@
               <FileName>bsp_can.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\can\bsp_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>
