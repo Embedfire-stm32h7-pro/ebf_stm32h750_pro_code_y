@@ -1,0 +1,17 @@
+把这两个下载算法都复制并放在keil安装目录这个路径下：Keil_v5\ARM\Flash
+
+文件路径说明
+下载算法（单片FLASH带boot且初始化SDRAM）
+       embedFire-H750-W25Q256-SDRAM.FLM
+下载算法（双片FLASH带boot且初始化SDRAM）
+      embedFire-H750-W25Q256x2-SDRAM.FLM
+
+
+ 文件embedFire-H750-W25Q256-SDRAM.FLM
+       下载算法，只使用第一片FLASH存储代码，并且自带bootloader，初始化SDRAM，频率为100M，初始化QSPI，
+频率为100M
+
+
+ 文件embedFire-H750-W25Q256x2-SDRAM.FLM
+       下载算法，只使用双片FLASH存储代码，并且自带bootloader，初始化SDRAM，频率为100M，初始化QSPI，
+频率为100M。代码读取的速度会比上面的快一倍。
