@@ -155,18 +155,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>452</LineNumber>
+          <LineNumber>1882</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218848</Address>
+          <Address>134236686</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>H:\stm32H750\base_code\14-QSPI鈥旇鍐欎覆琛孎LASH锛圵25Q256锛?鍗曠墖FLASH璇诲啓\Project\User\flash\bsp_qspi_flash.c</Filename>
+          <Filename>H:\stm32H750\base_code\14-QSPI鈥旇鍐欎覆琛孎LASH锛圵25Q256锛?鍙岀墖FLASH璇诲啓锛堥棿鎺ユā寮?Project\User\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Fire_H7\../../User/flash/bsp_qspi_flash.c\452</Expression>
+          <Expression>\\Fire_H7\../../User/main.c\1882</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

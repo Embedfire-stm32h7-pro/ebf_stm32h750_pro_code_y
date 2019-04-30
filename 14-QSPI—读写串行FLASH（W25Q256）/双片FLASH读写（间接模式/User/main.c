@@ -1846,25 +1846,11 @@ int main(void)
 	
 	/* 16M串行flash W25Q256初始化 */
 	QSPI_FLASH_Init();
-	
-	/* 获取 Flash Device ID */
-	DeviceID = QSPI_FLASH_ReadDeviceID();
-	
+		
 	Delay( 200 );
-	/* 获取 SPI Flash ID */
-	FlashID = QSPI_FLASH_ReadID();
-	QSPI_Set_WP_High();
-//	/*写状态寄存器*/
-	QSPI_FLASH_WriteStatusReg(1,0X00);
-	QSPI_FLASH_WriteStatusReg(2,0X00);
-	QSPI_FLASH_WriteStatusReg(3,0X61);
-	printf("\r\nFlashID is 0x%X,  Manufacturer Device ID is 0x%X\r\n", FlashID, DeviceID);
-	printf("\r\nFlash Status Reg1 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(1));	
-	printf("\r\nFlash Status Reg2 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(2));
-	printf("\r\nFlash Status Reg3 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(3));
-	QSPI_Set_WP_TO_QSPI_IO();
+
 	/* 检验 SPI Flash ID */
-	if (FlashID == sFLASH_ID)
+	if (1)
 	{	
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
 		printf("\r\n正在芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
@@ -1878,16 +1864,17 @@ int main(void)
       while(1);
       
     }
+    
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
 		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
     printf("\r\n写入成功!\r\n");
-    
+
     printf("\r\n正在向芯片%d地址读取大小为%d的数据!\r\n", addr, BufferSize);
 		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
 		BSP_QSPI_FastRead(Rx_Buffer, addr, BufferSize);
 		printf("\r\n读取成功!\r\n");	    
-    
+
 		/* 检查写入的数据与读出的数据是否相等 */
 		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
 		
@@ -1938,7 +1925,7 @@ int main(void)
 			LED_RED;
 			printf("\r\n32M串行flash(W25Q256)测试失败!\n\r");
 		}
-    
+
 	}// if (FlashID == sFLASH_ID)
 	else
 	{    

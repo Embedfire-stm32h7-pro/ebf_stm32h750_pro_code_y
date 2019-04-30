@@ -93,9 +93,9 @@ typedef struct {
 #define ENTER_4_BYTE_ADDR_MODE_CMD            0xB7
 
 /* 状态寄存器标志 */
-#define W25Q256JV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
-#define W25Q256JV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
-#define W25Q256JV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256JV_FSR_BUSY                    ((uint8_t)0x0101)    /*!< busy */
+#define W25Q256JV_FSR_WREN                    ((uint8_t)0x0202)    /*!< write enable */
+#define W25Q256JV_FSR_QE                      ((uint8_t)0x0202)    /*!< quad enable */
 /*命令定义-结尾*******************************/
 
 
@@ -133,7 +133,26 @@ typedef struct {
 #define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __GPIOG_CLK_ENABLE()
 #define QSPI_FLASH_CS_GPIO_AF             GPIO_AF10_QUADSPI
 
+/*QSPI BANK2接口定义-开头****************************/
+#define QSPI_FLASH_BK2_IO0_PIN             GPIO_PIN_2                
+#define QSPI_FLASH_BK2_IO0_PORT            GPIOH                   
+#define QSPI_FLASH_BK2_IO0_CLK_ENABLE()    __GPIOH_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO0_AF              GPIO_AF9_QUADSPI
 
+#define QSPI_FLASH_BK2_IO1_PIN             GPIO_PIN_3                
+#define QSPI_FLASH_BK2_IO1_PORT            GPIOH                      
+#define QSPI_FLASH_BK2_IO1_CLK_ENABLE()    __GPIOH_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO1_AF              GPIO_AF9_QUADSPI
+
+#define QSPI_FLASH_BK2_IO2_PIN             GPIO_PIN_9                
+#define QSPI_FLASH_BK2_IO2_PORT            GPIOG                      
+#define QSPI_FLASH_BK2_IO2_CLK_ENABLE()    __GPIOG_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO2_AF              GPIO_AF9_QUADSPI
+
+#define QSPI_FLASH_BK2_IO3_PIN             GPIO_PIN_14                
+#define QSPI_FLASH_BK2_IO3_PORT            GPIOG                      
+#define QSPI_FLASH_BK2_IO3_CLK_ENABLE()    __GPIOG_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO3_AF              GPIO_AF9_QUADSPI
 
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
@@ -141,7 +160,7 @@ uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
-
+uint8_t QSPI_EnterFourBytesAddress(void);
 uint8_t BSP_QSPI_Erase_Chip(void);
 static uint8_t QSPI_ResetMemory          (void);
 static uint8_t QSPI_WriteEnable          (void);
@@ -153,6 +172,6 @@ uint32_t QSPI_FLASH_ReadStatusReg(uint8_t reg);
 uint32_t QSPI_FLASH_WriteStatusReg(uint8_t reg,uint8_t regvalue);
 void QSPI_Set_WP_High(void);
 void QSPI_Set_WP_TO_QSPI_IO(void);
-void QSPI_FLASH_Wait_Busy(void);
+
 #endif /* __SPI_FLASH_H */
 
