@@ -20,7 +20,7 @@
 #include "./usart/bsp_debug_usart.h"
 #include "./flash/bsp_qspi_flash.h" 
 #include "./delay/core_delay.h"
-
+#include <string.h>
 typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 /* 获取缓冲区的长度 */
 #define TxBufferSize1   (countof(TxBuffer1) - 1)
@@ -1828,6 +1828,7 @@ uint8_t state = QSPI_ERROR;
 int main(void)
 {
   uint32_t addr = FLASH_WriteAddress ;
+  __IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
 	int state = QSPI_ERROR;
 	/* 使能指令缓存 */
 	SCB_EnableICache();
@@ -1846,28 +1847,14 @@ int main(void)
 	
 	/* 16M串行flash W25Q256初始化 */
 	QSPI_FLASH_Init();
+
 	
-	/* 获取 Flash Device ID */
-	DeviceID = QSPI_FLASH_ReadDeviceID();
-	
-	Delay( 200 );
-	/* 获取 SPI Flash ID */
-	FlashID = QSPI_FLASH_ReadID();
-	QSPI_Set_WP_High();
-//	/*写状态寄存器*/
-	QSPI_FLASH_WriteStatusReg(1,0X00);
-	QSPI_FLASH_WriteStatusReg(2,0X00);
-	QSPI_FLASH_WriteStatusReg(3,0X61);
-	printf("\r\nFlashID is 0x%X,  Manufacturer Device ID is 0x%X\r\n", FlashID, DeviceID);
-	printf("\r\nFlash Status Reg1 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(1));	
-	printf("\r\nFlash Status Reg2 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(2));
-	printf("\r\nFlash Status Reg3 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(3));
-	QSPI_Set_WP_TO_QSPI_IO();
-	/* 检验 SPI Flash ID */
-	if (FlashID == sFLASH_ID)
+	if (1)
 	{	
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
-		printf("\r\n正在擦除芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
+		printf("\r\n正在芯片擦除的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
+    
+    
     state = BSP_QSPI_Erase_Block(addr);
     if(state == QSPI_OK)
       printf("\r\n擦除成功!\r\n");
@@ -1881,32 +1868,57 @@ int main(void)
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
 		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
-    printf("\r\n写入成功!\r\n");
-    
-    printf("\r\n正在向芯片%d地址读取大小为%d的数据!\r\n", addr, BufferSize);
-		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
-		BSP_QSPI_FastRead(Rx_Buffer, addr, BufferSize);
-		printf("\r\n读取成功!\r\n");	    
-    
+    printf("\r\n写入成功!\r\n");    
+    /* QSPI memory reset */
+    if (QSPI_ResetMemory() != QSPI_OK)
+    {
+      return QSPI_ERROR;
+    }    
+    if( QSPI_EnableMemoryMappedMode() != QSPI_OK )
+    {
+      return QSPI_ERROR;
+    }
+    printf("\r\n---使用memcpy函数读取QPSI的内容----\n\r");
+    memcpy(Rx_Buffer,(uint8_t *)qspi_addr,BufferSize);
+        
 		/* 检查写入的数据与读出的数据是否相等 */
 		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
 		
 		if( PASSED == TransferStatus1 )
 		{    
 			LED_GREEN;
-			printf("\r\n读写%d地址测试成功!\n\r", addr);
+			printf("\r\n读写(memcpy)测试成功!\n\r");
 		}
 		else
 		{        
 			LED_RED;
-			printf("\r\n读写%d地址测试失败!\n\r", addr);
+			printf("\r\n读写(memcpy)测试失败!\n\r");
 		}
+    printf("\r\n-------使用指针读取QPSI的内容-------\n\r");
+    
+    memset(Rx_Buffer,0,BufferSize);
+    
+    for(int i = 0; i < BufferSize; i++)
+    { 
+      Rx_Buffer[i] = *qspi_addr;
+      qspi_addr++;
+    }    
+		/* 检查写入的数据与读出的数据是否相等 */
+		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
+		
+		if( PASSED == TransferStatus1 )
+		{    
+			LED_GREEN;
+			printf("\r\n读写(指针操作)测试成功!\n\r");
+		}
+		else
+		{        
+			LED_RED;
+			printf("\r\n读写(指针操作)测试失败!\n\r");
+		}    
+    
 	}// if (FlashID == sFLASH_ID)
-	else
-	{    
-		LED_RED;
-		printf("\r\n获取不到 W25Q256 ID!\n\r");
-	}
+
 	
 	while(1);  
 }

@@ -36,12 +36,6 @@ void QSPI_FLASH_Init(void)
 	QSPI_FLASH_BK1_IO2_CLK_ENABLE();
 	QSPI_FLASH_BK1_IO3_CLK_ENABLE();
 	QSPI_FLASH_CS_GPIO_CLK_ENABLE();
-
-	  /* 使能 QSPI BANK2时钟 */
-	QSPI_FLASH_BK2_IO0_CLK_ENABLE();
-	QSPI_FLASH_BK2_IO1_CLK_ENABLE();
-	QSPI_FLASH_BK2_IO2_CLK_ENABLE();
-	QSPI_FLASH_BK2_IO3_CLK_ENABLE();
 	
 	//设置引脚
 	/*!< 配置 QSPI_FLASH 引脚: CLK */
@@ -77,26 +71,6 @@ void QSPI_FLASH_Init(void)
 	GPIO_InitStruct.Pin = QSPI_FLASH_CS_PIN;
 	GPIO_InitStruct.Alternate = QSPI_FLASH_CS_GPIO_AF;
 	HAL_GPIO_Init(QSPI_FLASH_CS_GPIO_PORT, &GPIO_InitStruct);
-
-	/*!< 配置 QSPI_FLASH_BK2 引脚: IO0 */
-	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO0_PIN;
-	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO0_AF;
-	HAL_GPIO_Init(QSPI_FLASH_BK2_IO0_PORT, &GPIO_InitStruct);
-
-	/*!< 配置 QSPI_FLASH_BK2 引脚: IO1 */
-	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO1_PIN;
-	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO1_AF;
-	HAL_GPIO_Init(QSPI_FLASH_BK2_IO1_PORT, &GPIO_InitStruct);
-
-	/*!< 配置 QSPI_FLASH_BK2 引脚: IO2 */
-	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO2_PIN;
-	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO2_AF;
-	HAL_GPIO_Init(QSPI_FLASH_BK2_IO2_PORT, &GPIO_InitStruct);
-
-	/*!< 配置 QSPI_FLASH_BK2 引脚: IO3 */
-	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO3_PIN;
-	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO3_AF;
-	HAL_GPIO_Init(QSPI_FLASH_BK2_IO3_PORT, &GPIO_InitStruct);
 	
 	HAL_QSPI_DeInit(&QSPIHandle);
 	/* QSPI_FLASH 模式配置 */
@@ -104,19 +78,18 @@ void QSPI_FLASH_Init(void)
 	/*二分频，时钟为216/(1+1)=108MHz */
 	QSPIHandle.Init.ClockPrescaler = 1;
 	/*FIFO 阈值为 4 个字节*/
-	QSPIHandle.Init.FifoThreshold = 1;
+	QSPIHandle.Init.FifoThreshold = 24;
 	/*采样移位半个周期*/
 	QSPIHandle.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
-	/*Flash大小为64M字节，2^26，所以取权值26-1=25*/
-	QSPIHandle.Init.FlashSize = 25;
+	/*Flash大小为32M字节，2^25，所以取权值25-1=24*/
+	QSPIHandle.Init.FlashSize = 24;
 	/*片选高电平保持时间，至少50ns，对应周期数6*9.2ns =55.2ns*/
-	QSPIHandle.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_5_CYCLE;
+	QSPIHandle.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_6_CYCLE;
 	/*时钟模式选择模式0，nCS为高电平（片选释放）时，CLK必须保持低电平*/
-	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_0;
+	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_3;
 	/*根据硬件连接选择第一片Flash*/
-	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_2;
-  /*使能双闪存模式*/
-	QSPIHandle.Init.DualFlash= QSPI_DUALFLASH_ENABLE;
+	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_1;
+  QSPIHandle.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
 	HAL_QSPI_Init(&QSPIHandle);
 	/*初始化QSPI接口*/
 	BSP_QSPI_Init();
@@ -622,7 +595,7 @@ static uint8_t QSPI_WriteEnable()
 	s_config.Match           = W25Q256JV_FSR_WREN;
 	s_config.Mask            = W25Q256JV_FSR_WREN;
 	s_config.MatchMode       = QSPI_MATCH_MODE_AND;
-	s_config.StatusBytesSize = 2;
+	s_config.StatusBytesSize = 1;
 	s_config.Interval        = 0x10;
 	s_config.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
 
@@ -636,7 +609,6 @@ static uint8_t QSPI_WriteEnable()
 	}
 	return QSPI_OK;
 }
-
 
 /**
   * @brief  读取存储器的SR并等待EOP
@@ -659,10 +631,10 @@ static uint8_t QSPI_AutoPollingMemReady(uint32_t Timeout)
 	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
 	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
 
-	s_config.Match           = 0x0000;
+	s_config.Match           = 0x00;
 	s_config.Mask            = W25Q256JV_FSR_BUSY;
 	s_config.MatchMode       = QSPI_MATCH_MODE_AND;
-	s_config.StatusBytesSize = 2;
+	s_config.StatusBytesSize = 1;
 	s_config.Interval        = 0x10;
 	s_config.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
 
@@ -924,5 +896,10 @@ void QSPI_Set_WP_TO_QSPI_IO(void)
 	HAL_GPIO_Init(QSPI_FLASH_BK1_IO2_PORT, &GPIO_InitStruct);
 }
 
+//等待空闲
+void QSPI_FLASH_Wait_Busy(void)   
+{   
+	while((QSPI_FLASH_ReadStatusReg(1)&0x01)==0x01);   // 等待BUSY位清空
+}   
 
 /*********************************************END OF FILE**********************/

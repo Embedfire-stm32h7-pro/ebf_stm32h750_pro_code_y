@@ -1853,7 +1853,7 @@ int main(void)
 	if (1)
 	{	
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
-		printf("\r\n正在芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
+		printf("\r\n正在擦除芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
     state = BSP_QSPI_Erase_Block(addr);
     if(state == QSPI_OK)
       printf("\r\n擦除成功!\r\n");
@@ -1888,50 +1888,9 @@ int main(void)
 			LED_RED;
 			printf("\r\n读写%d地址测试失败!\n\r", addr);
 		}
-    /***************************************16M*******************************************/
-    //读写地址偏移至16M之后
-    addr += 16*1024*1024;
-		printf("\r\n正在芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
-    state = BSP_QSPI_Erase_Block(addr);
-    if(state == QSPI_OK)
-      printf("\r\n擦除成功!\r\n");
-    else
-    {
-      LED_RED;
-      printf("\r\n擦除失败!\r\n");
-      while(1);
-      
-    }
-    printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
-		/* 将发送缓冲区的数据写到flash中 */
-		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
-    printf("\r\n写入成功!\r\n");
-    
-    printf("\r\n正在向芯片%d地址读取大小为%d的数据!\r\n", addr, BufferSize);
-		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
-		BSP_QSPI_FastRead(Rx_Buffer, addr, BufferSize);
-		printf("\r\n读取成功!\r\n");	    
-    
-		/* 检查写入的数据与读出的数据是否相等 */
-		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
-		
-		if( PASSED == TransferStatus1 )
-		{    
-			LED_GREEN;
-			printf("\r\n32M串行flash(W25Q256)测试成功!\n\r");
-		}
-		else
-		{        
-			LED_RED;
-			printf("\r\n32M串行flash(W25Q256)测试失败!\n\r");
-		}
-
-	}// if (FlashID == sFLASH_ID)
-	else
-	{    
-		LED_RED;
-		printf("\r\n获取不到 W25Q256 ID!\n\r");
 	}
+
+
 	
 	while(1);  
 }
