@@ -1,5 +1,5 @@
-文件embedFire-H750-W25Q256-SDRAM.FLM
-单片FLASH，bootloader初始化SDRAM
+- H750-SINGLE-QSPI-BOOTLOADER
+单片FLASH，bootloader初始化SDRAM，初始化SDRAM，频率为100M，初始化QSPI，
 
-文件embedFire-H750-W25Q256x2-SDRAM.FLM
-双片FLASH，bootloader初始化SDRAM
+- H750-TWIN-QSPI-BOOTLOADER
+双片FLASH，bootloader初始化SDRAM，初始化SDRAM，频率为100M，初始化QSPI，
