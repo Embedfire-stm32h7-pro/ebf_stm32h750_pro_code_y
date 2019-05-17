@@ -56,44 +56,18 @@
 #define AP3216C_PS_THRESHOLD_HIGH_L_REG 0x2C //bit 1:0
 #define AP3216C_PS_THRESHOLD_HIGH_H_REG 0x2D //bit 9:2
 
-#define AP3216C_ADDR 0x1e /*0x3c=0x1e<<1*/ // AP3216C 的 7 位地址
+//#define AP3216C_ADDR 0x1e /*0x3c=0x1e<<1*/ // AP3216C 的 7 位地址
 
 /* 写寄存器的值 */
 static void write_reg(uint8_t reg, uint8_t data)
 {
-  
-  HAL_I2C_Mem_Write(&I2C_Handle, AP3216C_ADDR << 1, reg, I2C_MEMADD_SIZE_8BIT, &data, 1, 100);
-  
-  while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
-	{
-		
-	}
-	/* 检查SENSOR是否就绪进行下一次读写操作 */
-	while (HAL_I2C_IsDeviceReady(&I2C_Handle, AP3216C_ADDR << 1, 100, 100) == HAL_TIMEOUT);
-	/* 等待传输结束 */
-	while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
-	{
-		
-	}
+  Sensor_write(reg, data);
 }
 
 /* 读寄存器的值 */
 static void read_regs(uint8_t reg, uint8_t len, uint8_t *buf)
 {
-  
-  HAL_I2C_Mem_Read(&I2C_Handle, AP3216C_ADDR << 1, reg, I2C_MEMADD_SIZE_8BIT, buf, len, 100);
-  
-  while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
-	{
-		
-	}
-	/* 检查SENSOR是否就绪进行下一次读写操作 */
-	while (HAL_I2C_IsDeviceReady(&I2C_Handle, AP3216C_ADDR << 1, 100, 100) == HAL_TIMEOUT);
-	/* 等待传输结束 */
-	while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
-	{
-		
-	}
+  Sensor_Read(reg, buf, len);
 }
 
 /* 软件复位传感器 */
@@ -240,7 +214,7 @@ void AP_INT_Config(void)
  */
 void ap3216c_init(void)
 {
-  I2C_Mode_Config();
+  I2C_Init();
 
   /* 关闭所有功能 */
   write_reg(AP3216C_SYS_CONFIGURATION_REG, 0x00);
