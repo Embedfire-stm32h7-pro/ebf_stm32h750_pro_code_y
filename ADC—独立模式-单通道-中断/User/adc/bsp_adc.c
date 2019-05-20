@@ -30,17 +30,22 @@ __IO uint16_t ADC_ConvertedValue = 0;
   */  
 static void ADC_GPIO_Mode_Config(void)
 {
-    /* 定义一个GPIO_InitTypeDef类型的结构体 */
-    GPIO_InitTypeDef  GPIO_InitStruct;
-    /* 使能ADC3引脚的时钟 */
-    RHEOSTAT_ADC_GPIO_CLK_ENABLE();
+  /* 定义一个GPIO_InitTypeDef类型的结构体 */
+  GPIO_InitTypeDef  GPIO_InitStruct;
+  /* 使能ADC3引脚的时钟 */
+  RHEOSTAT_ADC_GPIO_CLK_ENABLE();
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
     
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG; 
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Pin = RHEOSTAT_ADC_PIN;
-    /* 配置为模拟输入，不需要上拉电阻 */ 
-    HAL_GPIO_Init(RHEOSTAT_ADC_GPIO_PORT, &GPIO_InitStruct);
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG; 
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pin = RHEOSTAT_ADC_PIN;
+  /* 配置为模拟输入，不需要上拉电阻 */ 
+  HAL_GPIO_Init(RHEOSTAT_ADC_GPIO_PORT, &GPIO_InitStruct);
   
+  /**ADC3 GPIO Configuration    
+  PC3_C     ------> ADC3_INP1 
+  */
+  HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PC3, SYSCFG_SWITCH_PC3_OPEN);  
 }
 
 /**
@@ -78,16 +83,21 @@ static void ADC_Mode_Config(void)
       
     ADC_Handle.Instance = RHEOSTAT_ADC;
     //使能Boost模式
-    ADC_Handle.Init.BoostMode = ENABLE;
+//    ADC_Handle.Init.BoostMode = ENABLE;
     //ADC时钟1分频
     ADC_Handle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
     //使能连续转换模式
     ADC_Handle.Init.ContinuousConvMode = ENABLE;
+    //转换通道 1个
+    ADC_Handle.Init.NbrOfConversion = 1;
     //数据存放在数据寄存器中
     ADC_Handle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
     //关闭不连续转换模式
     ADC_Handle.Init.DiscontinuousConvMode = DISABLE;
-    ADC_Handle.Init.NbrOfDiscConversion = 3;
+    // 非连续转换个数
+    ADC_Handle.Init.NbrOfDiscConversion = 0;
+    //数据右对齐	
+    ADC_Handle.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
     
     //使能EOC标志位
     ADC_Handle.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
@@ -116,8 +126,8 @@ static void ADC_Mode_Config(void)
     ADC_Config.SingleDiff = ADC_SINGLE_ENDED ;
     //配置ADC通道
     HAL_ADC_ConfigChannel(&ADC_Handle, &ADC_Config);
-    //使能ADC
-    ADC_Enable(&ADC_Handle);
+//    //使能ADC
+//    ADC_Enable(&ADC_Handle);
 }
 /**
   * @brief  ADC中断优先级配置函数
@@ -126,7 +136,7 @@ static void ADC_Mode_Config(void)
   */  
 static void Rheostat_ADC_NVIC_Config(void)
 {
-    HAL_NVIC_SetPriority(Rheostat_ADC_IRQ, 0, 0);
+    HAL_NVIC_SetPriority(Rheostat_ADC_IRQ, 1, 1);
     HAL_NVIC_EnableIRQ(Rheostat_ADC_IRQ);
 }
 
@@ -145,6 +155,8 @@ void ADC_Init(void)
     Rheostat_ADC_NVIC_Config();
     //使能ADC中断 
     HAL_ADC_Start_IT(&ADC_Handle);
+    //使能ADC
+    ADC_Enable(&ADC_Handle);
     //软件触发ADC采样
     HAL_ADC_Start(&ADC_Handle);
 }
@@ -157,7 +169,7 @@ void ADC_Init(void)
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 {
   /* 获取结果 */
-    ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle); 
+  ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle);  
 }
 /*********************************************END OF FILE**********************/
 

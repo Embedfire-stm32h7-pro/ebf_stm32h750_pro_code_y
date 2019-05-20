@@ -5,7 +5,7 @@
 
 
 //Òý½Å¶¨Òå
-#define RHEOSTAT_ADC_PIN                            GPIO_PIN_3                 
+#define RHEOSTAT_ADC_PIN                            GPIO_PIN_3                
 #define RHEOSTAT_ADC_GPIO_PORT                      GPIOC                     
 #define RHEOSTAT_ADC_GPIO_CLK_ENABLE()              __GPIOC_CLK_ENABLE()
 

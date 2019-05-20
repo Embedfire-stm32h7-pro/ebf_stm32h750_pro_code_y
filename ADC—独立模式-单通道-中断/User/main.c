@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -16,12 +16,14 @@
   */  
 #include "stm32h7xx.h"
 #include "main.h"
+#include "./led/bsp_led.h"
 #include "./usart/bsp_debug_usart.h"
 #include "./adc/bsp_adc.h"
 #include "./mpu/bsp_mpu.h" 
 #include "./delay/core_delay.h"  
 
-extern uint16_t ADC_ConvertedValue;
+extern ADC_HandleTypeDef ADC_Handle;
+extern __IO uint16_t ADC_ConvertedValue;
 float ADC_vol = 0.0;
 
 //简单的延时函数
@@ -29,6 +31,7 @@ static void Delay(__IO uint32_t nCount)
 {
 	for(; nCount != 0; nCount--);
 }
+
 /**
   * @brief  主函数
   * @param  无
@@ -36,6 +39,7 @@ static void Delay(__IO uint32_t nCount)
   */
 int main(void)
 {
+ 
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
   
@@ -46,8 +50,9 @@ int main(void)
 //  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
-//  SCB_EnableDCache();    // 使能数据 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
   
+  LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
   
@@ -55,16 +60,20 @@ int main(void)
   ADC_Init();
   
   while(1)
-	{	
-      Delay(0xffffee);
-      
-      printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
-
-      printf("\r\n The current AD value = %f V \r\n", ADC_vol);
+	{
+		/*关闭ADC3中断 */
+		HAL_NVIC_DisableIRQ(Rheostat_ADC_IRQ);
+    LED2_TOGGLE;
+    Delay(0xffffee);
     
-      /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
-      ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
+    printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
 
+    printf("\r\n The current AD value = %f V \r\n", ADC_vol);
+
+		/*开启ADC3中断 */
+		HAL_NVIC_EnableIRQ(Rheostat_ADC_IRQ);
+    /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
+    ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
 	}  
 }
 
