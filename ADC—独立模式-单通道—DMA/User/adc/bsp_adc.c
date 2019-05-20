@@ -31,17 +31,20 @@ __attribute__ ((at(0x30000000))) __IO uint16_t ADC_ConvertedValue = 0;
   */  
 static void ADC_GPIO_Mode_Config(void)
 {
-    /* 定义一个GPIO_InitTypeDef类型的结构体 */
-    GPIO_InitTypeDef  GPIO_InitStruct;
-    /* 使能ADC引脚的时钟 */
-    RHEOSTAT_ADC_GPIO_CLK_ENABLE();
+  /* 定义一个GPIO_InitTypeDef类型的结构体 */
+  GPIO_InitTypeDef  GPIO_InitStruct;
+  /* 使能ADC引脚的时钟 */
+  RHEOSTAT_ADC_GPIO_CLK_ENABLE();
     
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG; 
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Pin = RHEOSTAT_ADC_PIN; 
-    /* 配置为模拟输入，不需要上拉电阻 */ 
-    HAL_GPIO_Init(RHEOSTAT_ADC_GPIO_PORT, &GPIO_InitStruct);
-  
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG; 
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pin = RHEOSTAT_ADC_PIN; 
+  /* 配置为模拟输入，不需要上拉电阻 */ 
+  HAL_GPIO_Init(RHEOSTAT_ADC_GPIO_PORT, &GPIO_InitStruct);
+	
+	/* H750XBH6的ADC3_CH1使用的是PC3_C，与PC3是不同的引脚，通过一个模拟开关连接，使用时需要切换 */
+  /* PC3_C ------> ADC3_INP1  */
+  HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PC3, SYSCFG_SWITCH_PC3_OPEN);
 }
 
 /**
@@ -112,10 +115,16 @@ static void ADC_Mode_Config(void)
     ADC_Handle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
     //使能连续转换模式
     ADC_Handle.Init.ContinuousConvMode = ENABLE;
+		//转换通道 1个
+    ADC_Handle.Init.NbrOfConversion = 1;
     //数据存放在数据寄存器中
     ADC_Handle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
     //关闭不连续转换模式
     ADC_Handle.Init.DiscontinuousConvMode = DISABLE;
+		// 非连续转换个数
+    ADC_Handle.Init.NbrOfDiscConversion = 0;
+		//数据右对齐	
+    ADC_Handle.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
     //单次转换
     ADC_Handle.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
     //软件触发
@@ -133,7 +142,7 @@ static void ADC_Mode_Config(void)
     //初始化 ADC
     HAL_ADC_Init(&ADC_Handle);
           
-    //使用通道18
+    //使用通道1
     ADC_Config.Channel = RHEOSTAT_ADC_CHANNEL;
     //转换顺序为1
     ADC_Config.Rank = ADC_REGULAR_RANK_1;
@@ -144,10 +153,10 @@ static void ADC_Mode_Config(void)
     //配置ADC通道
     HAL_ADC_ConfigChannel(&ADC_Handle, &ADC_Config);    
     
-    //使能ADC1、2
-    ADC_Enable(&ADC_Handle);
+//    //使能ADC1
+//    ADC_Enable(&ADC_Handle);
     
-    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
+//    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
     
 }
 /**
@@ -157,8 +166,8 @@ static void ADC_Mode_Config(void)
   */  
 void Rheostat_ADC_NVIC_Config(void)
 {
-    HAL_NVIC_SetPriority(Rheostat_ADC12_IRQ, 0, 0);
-    HAL_NVIC_EnableIRQ(Rheostat_ADC12_IRQ);
+    HAL_NVIC_SetPriority(Rheostat_ADC1_IRQ, 0, 0);
+    HAL_NVIC_EnableIRQ(Rheostat_ADC1_IRQ);
 }
 
 /**
@@ -172,6 +181,10 @@ void ADC_Init(void)
     ADC_GPIO_Mode_Config();
   
     ADC_Mode_Config();
+	//使能ADC1
+    ADC_Enable(&ADC_Handle);
+	
+    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
   
     HAL_ADC_Start(&ADC_Handle);
 }

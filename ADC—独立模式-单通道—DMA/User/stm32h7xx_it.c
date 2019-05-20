@@ -34,9 +34,9 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_it.h"
-
+#include "./usart/bsp_debug_usart.h"
 /* USER CODE BEGIN 0 */
-
+extern ADC_HandleTypeDef ADC_Handle;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -183,6 +183,12 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
-
+/**
+* @brief This function handles DMA1 stream1 global interrupt.
+*/
+void RHEOSTAT_ADC_DMA_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -16,9 +16,10 @@
   */  
 #include "stm32h7xx.h"
 #include "main.h"
+#include "./led/bsp_led.h"
 #include "./usart/bsp_debug_usart.h"
 #include "./adc/bsp_adc.h"
-  
+#include "./mpu/bsp_mpu.h"
 #include "./delay/core_delay.h"  
 
 extern __IO uint16_t ADC_ConvertedValue;
@@ -42,10 +43,10 @@ int main(void)
    DMA 时需注意 Cache 与 内存内容一致性的问题，
    具体注意事项请参考配套教程的 MPU 配置相关章节 */
 //  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
-//  SCB_EnableDCache();    // 使能数据 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
   
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
@@ -54,15 +55,16 @@ int main(void)
   ADC_Init();
   
   while(1)
-	{	
-      Delay(0xffffee);
+	{
+		LED2_TOGGLE;
+    Delay(0xffffee);
       
-      printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
+    printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
 
-      printf("\r\n The current AD value = %f V \r\n", ADC_vol);
+    printf("\r\n The current AD value = %f V \r\n", ADC_vol);
     
-      /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
-      ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
+    /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
+    ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
 	}  
 }
 

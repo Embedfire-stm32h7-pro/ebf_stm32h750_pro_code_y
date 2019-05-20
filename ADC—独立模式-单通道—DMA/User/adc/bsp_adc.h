@@ -20,7 +20,7 @@
 //DMA中断服务函数
 #define RHEOSTAT_ADC_DMA_IRQHandler                 DMA1_Stream1_IRQHandler
 
-#define Rheostat_ADC12_IRQ                          ADC_IRQn
+#define Rheostat_ADC1_IRQ                          ADC3_IRQn
 
 void ADC_Init(void);
 
