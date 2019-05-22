@@ -37,7 +37,11 @@ void QSPI_FLASH_Init(void)
 	QSPI_FLASH_BK1_IO2_CLK_ENABLE();
 	QSPI_FLASH_BK1_IO3_CLK_ENABLE();
 	QSPI_FLASH_CS_GPIO_CLK_ENABLE();
-
+	/* 使能 QSPI BANK2时钟 */
+	QSPI_FLASH_BK2_IO0_CLK_ENABLE();
+	QSPI_FLASH_BK2_IO1_CLK_ENABLE();
+	QSPI_FLASH_BK2_IO2_CLK_ENABLE();
+	QSPI_FLASH_BK2_IO3_CLK_ENABLE();
 	//设置引脚
 	/*!< 配置 QSPI_FLASH 引脚: CLK */
 	GPIO_InitStruct.Pin = QSPI_FLASH_CLK_PIN;
@@ -73,10 +77,31 @@ void QSPI_FLASH_Init(void)
 	GPIO_InitStruct.Pin = QSPI_FLASH_CS_PIN;
 	GPIO_InitStruct.Alternate = QSPI_FLASH_CS_GPIO_AF;
 	HAL_GPIO_Init(QSPI_FLASH_CS_GPIO_PORT, &GPIO_InitStruct);
+
+	/*!< 配置 QSPI_FLASH_BK2 引脚: IO0 */
+	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO0_PIN;
+	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO0_AF;
+	HAL_GPIO_Init(QSPI_FLASH_BK2_IO0_PORT, &GPIO_InitStruct);
+
+	/*!< 配置 QSPI_FLASH_BK2 引脚: IO1 */
+	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO1_PIN;
+	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO1_AF;
+	HAL_GPIO_Init(QSPI_FLASH_BK2_IO1_PORT, &GPIO_InitStruct);
+
+	/*!< 配置 QSPI_FLASH_BK2 引脚: IO2 */
+	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO2_PIN;
+	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO2_AF;
+	HAL_GPIO_Init(QSPI_FLASH_BK2_IO2_PORT, &GPIO_InitStruct);
+
+	/*!< 配置 QSPI_FLASH_BK2 引脚: IO3 */
+	GPIO_InitStruct.Pin = QSPI_FLASH_BK2_IO3_PIN;
+	GPIO_InitStruct.Alternate = QSPI_FLASH_BK2_IO3_AF;
+	HAL_GPIO_Init(QSPI_FLASH_BK2_IO3_PORT, &GPIO_InitStruct);  
+  
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
     //QSPI freq = osc/PLL2M*PLL2N/PLL2R/（ClockPrescaler+1）
   PeriphClkInitStruct.PLL2.PLL2M = 5;
-  PeriphClkInitStruct.PLL2.PLL2N = 144;
+  PeriphClkInitStruct.PLL2.PLL2N = 120;
   PeriphClkInitStruct.PLL2.PLL2P = 2;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 3;
@@ -93,15 +118,15 @@ void QSPI_FLASH_Init(void)
 	QSPIHandle.Init.FifoThreshold = 24;
 	/*采样移位半个周期*/
 	QSPIHandle.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
-	/*Flash大小为32M字节，2^25，所以取权值25-1=24*/
+	/*Flash大小为64M字节，2^26，所以取权值26-1=25*/
 	QSPIHandle.Init.FlashSize = 24;
 	/*片选高电平保持时间，至少50ns，对应周期数6*9.2ns =55.2ns*/
 	QSPIHandle.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_6_CYCLE;
 	/*时钟模式选择模式0，nCS为高电平（片选释放）时，CLK必须保持低电平*/
 	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_3;
 	/*根据硬件连接选择第一片Flash*/
-	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_1;
-//  QSPIHandle.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
+	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_2;
+//  QSPIHandle.Init.DualFlash = QSPI_DUALFLASH_ENABLE;
 	HAL_QSPI_Init(&QSPIHandle);
 	/*初始化QSPI接口*/
 	BSP_QSPI_Init();

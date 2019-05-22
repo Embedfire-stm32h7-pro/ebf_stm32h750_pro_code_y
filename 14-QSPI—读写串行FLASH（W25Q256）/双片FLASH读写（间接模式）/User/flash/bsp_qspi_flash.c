@@ -125,7 +125,7 @@ void QSPI_FLASH_Init(void)
 	/*时钟模式选择模式0，nCS为高电平（片选释放）时，CLK必须保持低电平*/
 	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_0;
 	/*根据硬件连接选择第一片Flash*/
-	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_1;
+	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_2;
   QSPIHandle.Init.DualFlash = QSPI_DUALFLASH_ENABLE;
 	HAL_QSPI_Init(&QSPIHandle);
 	/*初始化QSPI接口*/
@@ -270,7 +270,6 @@ uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
   * @param  Size: 要读取的数据大小    
   * @retval QSPI存储器状态
   */
-#if 1 
 uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
 {
 	QSPI_CommandTypeDef s_command;
@@ -308,65 +307,6 @@ uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
 	}
 	return QSPI_OK;
 }
-#else
-uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
-{
-  QSPI_CommandTypeDef s_command;
-  uint32_t cur_addr = 0, cur_size = 0, end_addr = 0;
-  
-  if(Size == 0)
-  {
-    printf("BSP_QSPI_FastRead Size = 0");
-    return QSPI_OK;
-  }  
-  
-  while(cur_addr <= ReadAddr)
-  {
-    cur_addr += W25Q256JV_PAGE_SIZE;
-  }
-  //当前页剩余多少个空位
-  cur_size = cur_addr - ReadAddr;  
-  if(cur_size > Size)
-    cur_size = Size;
-  
-  cur_addr = ReadAddr;
-  
-	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-	s_command.Instruction       = QUAD_INOUT_FAST_READ_CMD_4BYTE;
-	s_command.AddressMode       = QSPI_ADDRESS_4_LINES;
-	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
-	
-	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-	s_command.DataMode          = QSPI_DATA_4_LINES;
-	s_command.DummyCycles       = 6;
-	
-	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
-	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
-	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;  
-  
-  do
-  {
-    s_command.Address           = ReadAddr;
-    s_command.NbData            = Size;
-    /* 配置命令 */
-    if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-    {
-      return QSPI_ERROR;
-    }
-
-    /* 接收数据 */
-    if (HAL_QSPI_Receive(&QSPIHandle, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-    {
-      return QSPI_ERROR;
-    }    
-      
-  }while(cur_addr < end_addr);
-  
-  
-  return QSPI_OK;
-}
-
-#endif
 /**
   * @brief  将大量数据写入QSPI存储器
   * @param  pData: 指向要写入数据的指针
@@ -454,8 +394,10 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
 
 		/* 更新下一页编程的地址和大小变量 */
 		current_addr += current_size;
-		pData += current_size;
+    //if(current_size == 1)current_size++;
+		pData += QSPIHandle.TxXferSize;
 		current_size = ((current_addr + W25Q256JV_PAGE_SIZE) > end_addr) ? (end_addr - current_addr) : W25Q256JV_PAGE_SIZE;
+    CPU_TS_Tmr_Delay_US(1);
 	} while (current_addr < end_addr);
 	return QSPI_OK;
 }

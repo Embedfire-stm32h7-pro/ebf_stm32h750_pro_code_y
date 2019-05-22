@@ -23,12 +23,12 @@
 #include <string.h>
 typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 /* 获取缓冲区的长度 */
-#define TxBufferSize1   (countof(TxBuffer1) - 1)
-#define RxBufferSize1   (countof(TxBuffer1) - 1)
+#define TxBufferSize1   (countof(Tx_Buffer123) - 1)
+#define RxBufferSize1   (countof(Tx_Buffer123) - 1)
 #define countof(a)      (sizeof(a) / sizeof(*(a)))
-#define  BufferSize     (countof(Tx_Buffer)-1)
+#define  BufferSize     256//(countof(Tx_Buffer123)-1)
 
-#define  FLASH_WriteAddress     0
+#define  FLASH_WriteAddress     16*1024*1024
 #define  FLASH_ReadAddress      FLASH_WriteAddress
 #define  FLASH_SectorToErase    FLASH_WriteAddress
 
@@ -1828,7 +1828,7 @@ uint8_t state = QSPI_ERROR;
 int main(void)
 {
   uint32_t addr = FLASH_WriteAddress ;
-  __IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
+  __IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000+addr);
 	int state = QSPI_ERROR;
 	/* 使能指令缓存 */
 	SCB_EnableICache();
@@ -1847,15 +1847,24 @@ int main(void)
 	
 	/* 16M串行flash W25Q256初始化 */
 	QSPI_FLASH_Init();
-
+  QSPI_Set_WP_High();
+  /*写状态寄存器*/
+  /*对flash解锁，一般用不上*/
+  QSPI_FLASH_WriteStatusReg(1,0X00);
+  QSPI_FLASH_WriteStatusReg(2,0X00);
+//    QSPI_FLASH_WriteStatusReg(3,0X61);
+  printf("\r\nFlash Status Reg1 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(1));	
+  printf("\r\nFlash Status Reg2 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(2));
+  printf("\r\nFlash Status Reg3 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(3));
+  QSPI_Set_WP_TO_QSPI_IO(); 
 	
 	if (1)
 	{	
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
 		printf("\r\n正在芯片擦除的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
     
-    
-    state = BSP_QSPI_Erase_Block(addr);
+#if 0    
+    state = BSP_QSPI_Erase_Chip();
     if(state == QSPI_OK)
       printf("\r\n擦除成功!\r\n");
     else
@@ -1868,9 +1877,21 @@ int main(void)
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
 		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
+#endif    
     printf("\r\n写入成功!\r\n");
   
+#if 0
+    int count = 0;;
+    for(int i = 0; i < BufferSize; i++)
+    {
+      count++;
+      printf("%x ", Tx_Buffer[i]);
+      if(count % 10 == 0)
+        printf("\n");
+    }
     
+    
+#endif    
     
     /* QSPI memory reset */
     if (QSPI_ResetMemory() != QSPI_OK)
@@ -1883,7 +1904,21 @@ int main(void)
     }
     printf("\r\n---使用memcpy函数读取QPSI的内容----\n\r");
     memcpy(Rx_Buffer,(uint8_t *)qspi_addr,BufferSize);
-        
+    
+#if 0
+    count = 0;;
+    for(int i = 0; i < BufferSize; i++)
+    {
+      count++;
+      printf("%x ", Rx_Buffer[i]);
+      if(count % 10 == 0)
+        printf("\n");
+    }
+    
+    
+#endif
+
+    
 		/* 检查写入的数据与读出的数据是否相等 */
 		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
 		
@@ -1941,6 +1976,7 @@ TestStatus Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint32_t BufferLength
   {
     if(*pBuffer1 != *pBuffer2)
     {
+      printf("BufferLength = %d\r\n",BufferLength);
       return FAILED;
     }
 

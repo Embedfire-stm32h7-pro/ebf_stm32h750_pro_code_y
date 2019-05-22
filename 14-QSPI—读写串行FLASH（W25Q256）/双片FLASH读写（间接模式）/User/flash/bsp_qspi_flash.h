@@ -79,7 +79,7 @@ typedef struct {
 #define WRITE_STATUS_REG2_CMD                 0x31
 #define WRITE_STATUS_REG3_CMD                 0x11
 /* ±à³Ì²Ù×÷ */
-#define QUAD_INPUT_PAGE_PROG_CMD_4BYTE        0x34
+#define QUAD_INPUT_PAGE_PROG_CMD_4BYTE        0x32
 #define EXT_QUAD_IN_FAST_PROG_CMD_4BYTE       0x12
 
 /* ²Á³ý²Ù×÷ */

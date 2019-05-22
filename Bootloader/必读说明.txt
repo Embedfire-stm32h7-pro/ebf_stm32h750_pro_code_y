@@ -1,5 +1,0 @@
-文件embedFire-H750-W25Q256-SDRAM.FLM
-单片FLASH，bootloader初始化SDRAM
-
-文件embedFire-H750-W25Q256x2-SDRAM.FLM
-双片FLASH，bootloader初始化SDRAM

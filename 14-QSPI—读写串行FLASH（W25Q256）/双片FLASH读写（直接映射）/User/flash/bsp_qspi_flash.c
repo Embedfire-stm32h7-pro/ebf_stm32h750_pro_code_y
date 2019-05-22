@@ -104,13 +104,13 @@ void QSPI_FLASH_Init(void)
 	/*二分频，时钟为216/(1+1)=108MHz */
 	QSPIHandle.Init.ClockPrescaler = 1;
 	/*FIFO 阈值为 4 个字节*/
-	QSPIHandle.Init.FifoThreshold = 1;
+	QSPIHandle.Init.FifoThreshold = 24;
 	/*采样移位半个周期*/
 	QSPIHandle.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
 	/*Flash大小为64M字节，2^26，所以取权值26-1=25*/
 	QSPIHandle.Init.FlashSize = 25;
 	/*片选高电平保持时间，至少50ns，对应周期数6*9.2ns =55.2ns*/
-	QSPIHandle.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_5_CYCLE;
+	QSPIHandle.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_3_CYCLE;
 	/*时钟模式选择模式0，nCS为高电平（片选释放）时，CLK必须保持低电平*/
 	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_0;
 	/*根据硬件连接选择第一片Flash*/
@@ -412,8 +412,10 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
 
 		/* 更新下一页编程的地址和大小变量 */
 		current_addr += current_size;
-		pData += current_size;
+    //if(current_size == 1)current_size++;
+		pData += QSPIHandle.TxXferSize;
 		current_size = ((current_addr + W25Q256JV_PAGE_SIZE) > end_addr) ? (end_addr - current_addr) : W25Q256JV_PAGE_SIZE;
+    CPU_TS_Tmr_Delay_US(100);
 	} while (current_addr < end_addr);
 	return QSPI_OK;
 }
@@ -450,12 +452,12 @@ uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress)
 	{
 		return QSPI_ERROR;
 	}
-  //QSPI_FLASH_Wait_Busy();
+  QSPI_FLASH_Wait_Busy();
 	/* 配置自动轮询模式等待擦除结束 */  
-	if (QSPI_AutoPollingMemReady(W25Q256JV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
-	{
-		return QSPI_ERROR;
-	}
+//	if (QSPI_AutoPollingMemReady(W25Q256JV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
+//	{
+//		return QSPI_ERROR;
+//	}
   
 	return QSPI_OK;
 }
@@ -924,5 +926,11 @@ void QSPI_Set_WP_TO_QSPI_IO(void)
 	HAL_GPIO_Init(QSPI_FLASH_BK1_IO2_PORT, &GPIO_InitStruct);
 }
 
+ //等待空闲
+static void QSPI_FLASH_Wait_Busy(void)   
+{   
+	while((QSPI_FLASH_ReadStatusReg(1)&0x01)==0x01);   // 等待BUSY位清空
+}   
+ 
 
 /*********************************************END OF FILE**********************/

@@ -23,12 +23,12 @@
 
 typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 /* 获取缓冲区的长度 */
-#define TxBufferSize1   (countof(TxBuffer1) - 1)
-#define RxBufferSize1   (countof(TxBuffer1) - 1)
+#define TxBufferSize1   (countof(Tx_Buffer123) - 1)
+#define RxBufferSize1   (countof(Tx_Buffer123) - 1)
 #define countof(a)      (sizeof(a) / sizeof(*(a)))
-#define  BufferSize     (countof(Tx_Buffer)-1)
+#define  BufferSize     (countof(Tx_Buffer123)-1)
 
-#define  FLASH_WriteAddress     225
+#define  FLASH_WriteAddress     0
 #define  FLASH_ReadAddress      FLASH_WriteAddress
 #define  FLASH_SectorToErase    FLASH_WriteAddress
 
@@ -1850,8 +1850,8 @@ int main(void)
   /*写状态寄存器*/
   /*对flash解锁，一般用不上*/
   QSPI_FLASH_WriteStatusReg(1,0X00);
-  QSPI_FLASH_WriteStatusReg(2,0X00);
-//    QSPI_FLASH_WriteStatusReg(3,0X61);
+//  QSPI_FLASH_WriteStatusReg(2,0X00);
+
   printf("\r\nFlash Status Reg1 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(1));	
   printf("\r\nFlash Status Reg2 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(2));
   printf("\r\nFlash Status Reg3 is 0x%02X,\r\n", QSPI_FLASH_ReadStatusReg(3));
@@ -1861,73 +1861,50 @@ int main(void)
 	/* 检验 SPI Flash ID */
 	if (1)
 	{
-#if 1    
+    
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
 		printf("\r\n正在擦除芯片的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
-    for(int i = 0; i < 4; i++)
-      state = BSP_QSPI_Erase_Block(256*i);
-    //state = BSP_QSPI_Erase_Chip();
-    if(state == QSPI_OK)
-      printf("\r\n擦除成功!\r\n");
-    else
-    {
-      LED_RED;
-      printf("\r\n擦除失败!\r\n");
-      while(1);
-      
-    }
-    char a = 0x08;
+//    for(int i = 0; i < 256; i++){
+//      state = BSP_QSPI_Erase_Block(256*i);
+//      if(state == QSPI_OK)
+//      {}
+//      else
+//      {
+//        LED_RED;
+//        
+//        while(1);
+//        
+//      }
+//    }
+    BSP_QSPI_Erase_Chip();
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
-    char *tx_buf = Tx_Buffer123;
-    for(int i = 0; i <= 258; i = i+2){
-      BSP_QSPI_Write(tx_buf, addr, 1);
-      printf("%d, %d", *tx_buf, *(tx_buf+1));
-      tx_buf+=2;
-      addr+=2;
-    }
+#if 0
+    BSP_QSPI_Write(Tx_Buffer123, addr, BufferSize);
     printf("\r\n写入成功!\r\n");
-    #endif
-    int count = 0;
-    for(int i = 0; i < 258; i++)
-    {
-      count++;
-
-      printf("%02x ", Tx_Buffer123[i]);
-      if(count % 10 == 0)
-      {
-        printf("\n");
-      }
-    }    
+    #endif 
 
     printf("\r\n正在向芯片%d地址读取大小为%d的数据!\r\n", addr, BufferSize);
 		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
-    uint8_t *buf = Rx_Buffer;
-//		BSP_QSPI_FastRead(buf, addr, 3);
-//    buf += 4;
-//    BSP_QSPI_FastRead(buf, addr, 5);
-    //for(int i = 0; i <=8; i=i+2)
-    {
-      //if(i == 0)continue;
-      BSP_QSPI_FastRead(buf, 225, 258);
-      buf += 2;
-      addr+=2;
-    }
-		printf("\r\n读取成功!\r\n");	     
-    count = 0;
-    for(int i = 0; i < 258; i++)
+    BSP_QSPI_FastRead(Rx_Buffer, addr, BufferSize);
+
+ #if 1
+    int count = 0;
+    for(int i = 0; i < BufferSize; i++)
     {
       count++;
-
-      printf("%02x ", Rx_Buffer[i]);
-      if(count % 10 == 0)
+      printf("%02x ",Rx_Buffer[i]);
+      if(count%10 == 0)
       {
         printf("\n");
       }
     }
-  
+#endif    
+    
+		printf("\r\n读取成功!\r\n");	     
+    
 		/* 检查写入的数据与读出的数据是否相等 */
-		TransferStatus1 = Buffercmp(Tx_Buffer123, Rx_Buffer, 258);
+		TransferStatus1 = Buffercmp(Tx_Buffer123, Rx_Buffer, BufferSize);
 		
 		if( PASSED == TransferStatus1 )
 		{    

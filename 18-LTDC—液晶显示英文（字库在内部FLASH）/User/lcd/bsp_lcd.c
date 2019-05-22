@@ -207,6 +207,7 @@ static void LCD_GPIO_Config(void)
 
   HAL_GPIO_Init(LTDC_BL_GPIO_PORT, &GPIO_InitStruct);
   
+  
 }
 /**
   * @brief  时钟配置
@@ -241,8 +242,12 @@ void LCD_Init(void)
 		LCD_ClockConfig();
     /* 初始化LCD引脚 */
     LCD_GPIO_Config();
+  
     /* 初始化SDRAM 用作LCD 显存*/
     SDRAM_Init();
+    //HAL_GPIO_WritePin(LTDC_BL_GPIO_PORT,LTDC_BL_GPIO_PIN,GPIO_PIN_RESET);
+    
+  
     /* 配置LTDC参数 */
     Ltdc_Handler.Instance = LTDC;  
     /* 配置行同步信号宽度(HSW-1) */
@@ -281,6 +286,7 @@ void LCD_Init(void)
     HAL_LTDC_Init(&Ltdc_Handler);
     /* 初始化字体 */
     LCD_SetFont(&LCD_DEFAULT_FONT);
+    LTDC_BL_GPIO_PORT->ODR &= ~(1<<13);
 }
 
 /**
