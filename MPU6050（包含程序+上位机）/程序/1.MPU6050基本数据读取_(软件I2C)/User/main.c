@@ -42,7 +42,7 @@ int main(void)
 	static short Gyro[3];
 	static float Temp;
 	
-  /* 系统时钟初始化成216 MHz */
+  /* 系统时钟初始化成400 MHz */
   SystemClock_Config();
   
   /* 默认不配置 MPU，若需要更高性能，当配置 MPU 后，使用 
@@ -52,7 +52,7 @@ int main(void)
 //  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
-//  SCB_EnableDCache();    // 使能数据 Cache
+  SCB_EnableDCache();    // 使能数据 Cache
   
     /* LED 端口初始化 */
     LED_GPIO_Config();
@@ -92,7 +92,7 @@ int main(void)
 	DEBUG_USART_Config(); 
 		
 	//初始化 I2C
-	I2cMaster_Init(); 
+	I2C_Init(); 
 
 	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
 

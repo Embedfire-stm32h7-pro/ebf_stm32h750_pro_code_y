@@ -66,11 +66,11 @@ void DEBUG_USART_Config(void)
     UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
     HAL_UART_Init(&UartHandle);
 
-    /*串口1中断初始化 */
-    HAL_NVIC_SetPriority(DEBUG_USART_IRQ, 0, 0);
-    HAL_NVIC_EnableIRQ(DEBUG_USART_IRQ);
-    /*配置串口接收中断 */
-    __HAL_UART_ENABLE_IT(&UartHandle,UART_IT_RXNE);  
+//    /*串口1中断初始化 */
+//    HAL_NVIC_SetPriority(DEBUG_USART_IRQ, 0, 0);
+//    HAL_NVIC_EnableIRQ(DEBUG_USART_IRQ);
+//    /*配置串口接收中断 */
+//    __HAL_UART_ENABLE_IT(&UartHandle,UART_IT_RXNE);  
 }
 
 
@@ -84,6 +84,10 @@ void Usart_SendString(uint8_t *str)
       k++;
   } while(*(str + k)!='\0');
   
+}
+void USART_SendData(uint8_t c)
+{
+	HAL_UART_Transmit(&UartHandle, &c, 1, 1000);
 }
 ///重定向c库函数printf到串口DEBUG_USART，重定向后可使用printf函数
 int fputc(int ch, FILE *f)

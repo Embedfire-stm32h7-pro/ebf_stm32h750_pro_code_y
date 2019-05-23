@@ -69,7 +69,8 @@ int Sensors_I2C_WriteRegister(unsigned char slave_addr,
                                         unsigned short len, 
                                         unsigned char *data_ptr);
 
-
+int get_tick_count(unsigned long *count);
+																				
 #endif // __I2C_H__
 
 

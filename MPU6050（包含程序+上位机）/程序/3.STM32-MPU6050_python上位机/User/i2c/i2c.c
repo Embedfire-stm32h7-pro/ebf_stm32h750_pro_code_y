@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F767 开发板 
+  * 实验平台:秉火  STM32 H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -153,4 +153,15 @@ int Sensors_I2C_ReadRegister(unsigned char slave_addr,
 		
 	}
 	return status;
+}
+
+/**
+  * @brief  获取当前毫秒值
+  * @param  存储最新毫秒值的变量
+  * @retval 无
+  */
+int get_tick_count(unsigned long *count)
+{
+   count[0] = HAL_GetTick();
+	return 0;
 }

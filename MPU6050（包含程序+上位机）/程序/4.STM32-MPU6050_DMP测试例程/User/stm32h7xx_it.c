@@ -34,12 +34,12 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_it.h"
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+#include "main.h"
+#include "./mpu6050/bsp_mpu_exti.h"
+#include "./i2c/i2c.h"
 
 /* External variables --------------------------------------------------------*/
+extern void gyro_data_ready_cb(void);
 
 /******************************************************************************/
 /*            Cortex Processor Interruption and Exception Handlers         */ 
@@ -164,23 +164,9 @@ void PendSV_Handler(void)
 /**
 * @brief This function handles System tick timer.
 */
-extern uint32_t Task_Delay[3];
 void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN SysTick_IRQn 0 */
-  uint8_t i;	
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-  HAL_SYSTICK_IRQHandler();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
-	for(i=0;i<3;i++)
-	{
-		if(Task_Delay[i])
-		{
-			Task_Delay[i]--;
-		}
-	}
-  /* USER CODE END SysTick_IRQn 1 */
+HAL_IncTick();
 }
 
 /******************************************************************************/
@@ -191,6 +177,15 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+void EXTI3_IRQHandler(void)
+{
+	if (__HAL_GPIO_EXTI_GET_IT(MPU_INT_GPIO_PIN) != RESET) //确保是否产生了EXTI Line中断
+	{
+		/* Handle new gyro*/
+		gyro_data_ready_cb();
 
+		__HAL_GPIO_EXTI_CLEAR_IT(MPU_INT_GPIO_PIN);     //清除中断标志位
+	}
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

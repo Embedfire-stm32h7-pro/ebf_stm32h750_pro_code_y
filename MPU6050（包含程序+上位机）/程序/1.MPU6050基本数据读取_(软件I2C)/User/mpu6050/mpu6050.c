@@ -1,7 +1,7 @@
 #include "./mpu6050/mpu6050.h"
 #include "./usart/bsp_debug_usart.h"
 #include "./i2c/i2c.h"
-
+#include "stm32h7xx_hal.h"
 
 #define MPU_ERROR 		I2C_ERROR
 #define MPU_INFO 		I2C_INFO
@@ -12,8 +12,8 @@
   * @retval  
   */
 void MPU6050_WriteReg(uint8_t reg_add,uint8_t reg_dat)
-{
-	Sensors_I2C_WriteRegister(MPU6050_ADDRESS,reg_add,1,&reg_dat);
+{ 
+	Sensor_write(reg_add, reg_dat);
 }
 
 /**
@@ -25,7 +25,7 @@ void MPU6050_WriteReg(uint8_t reg_add,uint8_t reg_dat)
   */
 void MPU6050_ReadData(uint8_t reg_add,unsigned char* Read,uint8_t num)
 {
-	Sensors_I2C_ReadRegister(MPU6050_ADDRESS,reg_add,num,Read);
+	Sensor_Read(reg_add,Read,num);
 }
 
 
@@ -36,14 +36,14 @@ void MPU6050_ReadData(uint8_t reg_add,unsigned char* Read,uint8_t num)
   */
 void MPU6050_Init(void)
 {
-	//在初始化之前要延时一段时间，若没有延时，则断电后再上电数据可能会出错
-	Delay(100);
+	MPU6050_WriteReg(MPU6050_RA_PWR_MGMT_1, 0x80);	     //复位MPU6050
+	HAL_Delay(100);
 	MPU6050_WriteReg(MPU6050_RA_PWR_MGMT_1, 0x00);	     //解除休眠状态
 	MPU6050_WriteReg(MPU6050_RA_SMPLRT_DIV , 0x07);	    //陀螺仪采样率
 	MPU6050_WriteReg(MPU6050_RA_CONFIG , 0x06);	
 	MPU6050_WriteReg(MPU6050_RA_ACCEL_CONFIG , 0x01);	  //配置加速度传感器工作在16G模式
 	MPU6050_WriteReg(MPU6050_RA_GYRO_CONFIG, 0x18);     //陀螺仪自检及测量范围，典型值：0x18(不自检，2000deg/s)
-	Delay(200);
+	HAL_Delay(50);
 }
 
 /**

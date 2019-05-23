@@ -10,6 +10,9 @@
 #define MPU6050_GYRO_OUT        0x43     //MPU6050陀螺仪数据寄存器地址
 #define MPU6050_ACC_OUT         0x3B     //MPU6050加速度数据寄存器地址
 
+#define MPU6050_ADDRESS_AD0_LOW     0x68 // address pin low (GND), default for InvenSense evaluation board
+#define MPU6050_ADDRESS_AD0_HIGH    0x69 // address pin high (VCC)
+#define MPU6050_DEFAULT_ADDRESS     MPU6050_ADDRESS_AD0_LOW
 
 #define MPU6050_RA_XG_OFFS_TC       0x00 //[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD
 #define MPU6050_RA_YG_OFFS_TC       0x01 //[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD

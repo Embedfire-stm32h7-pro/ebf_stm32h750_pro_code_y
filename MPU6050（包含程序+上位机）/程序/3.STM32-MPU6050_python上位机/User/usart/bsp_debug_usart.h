@@ -31,6 +31,7 @@
 #define DEBUG_USART_BAUDRATE                    115200
 
 void Usart_SendString(uint8_t *str);
+void USART_SendData(uint8_t c);
 void DEBUG_USART_Config(void);
 //int fputc(int ch, FILE *f);
 extern UART_HandleTypeDef UartHandle;
