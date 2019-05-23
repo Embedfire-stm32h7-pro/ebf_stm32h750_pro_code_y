@@ -15,6 +15,7 @@
   ******************************************************************
   */  
 #include "stm32h7xx.h"
+#include "stm32h7xx_it.h"
 #include "main.h"
 #include "./led/bsp_led.h"
 #include "./usart/bsp_debug_usart.h"
@@ -38,12 +39,15 @@ int main(void)
 {
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+	
+	/* 中断优先级分组 */
+	__HAL_RCC_SYSCFG_CLK_ENABLE();
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_2);
 
    /* 默认不配置 MPU，若需要更高性能，当配置 MPU 后，使用 
    DMA 时需注意 Cache 与 内存内容一致性的问题，
    具体注意事项请参考配套教程的 MPU 配置相关章节 */
-//  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+	Board_MPU_Config(0, MPU_Normal_WT, 0x30000000, MPU_1KB);
   
   SCB_EnableICache();    // 使能指令 Cache
   SCB_EnableDCache();    // 使能数据 Cache
@@ -51,20 +55,27 @@ int main(void)
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
   
+	/* LED初始化子程序 */
+	LED_GPIO_Config();
   /* ADC初始化子程序 */ 
   ADC_Init();
   
   while(1)
 	{
+		/* 开启DMA中断 */
+		HAL_NVIC_EnableIRQ(Rheostat_ADC1_DMA_IRQ);
+    /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
+    ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
+		/* 关闭DMA中断 */
+		HAL_NVIC_DisableIRQ(Rheostat_ADC1_DMA_IRQ);
+		
 		LED2_TOGGLE;
+		
     Delay(0xffffee);
-      
+		
     printf("\r\n The current AD value = 0x%04X \r\n", ADC_ConvertedValue);
 
     printf("\r\n The current AD value = %f V \r\n", ADC_vol);
-    
-    /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
-    ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
 	}  
 }
 

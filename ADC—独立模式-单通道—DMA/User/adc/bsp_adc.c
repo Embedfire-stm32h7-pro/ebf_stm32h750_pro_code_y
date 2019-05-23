@@ -21,7 +21,8 @@ extern float ADC_vol;
 
 ADC_HandleTypeDef ADC_Handle;
 DMA_HandleTypeDef hdma_adc;
-__attribute__ ((at(0x30000000))) __IO uint16_t ADC_ConvertedValue = 0;
+
+ALIGN_32BYTES (__attribute__ ((at(0x30000000))) __IO uint16_t ADC_ConvertedValue = 0);
 
 
 /**
@@ -153,21 +154,23 @@ static void ADC_Mode_Config(void)
     //配置ADC通道
     HAL_ADC_ConfigChannel(&ADC_Handle, &ADC_Config);    
     
-//    //使能ADC1
-//    ADC_Enable(&ADC_Handle);
-    
-//    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
-    
+    //使能ADC1
+    ADC_Enable(&ADC_Handle);
+    //此函数会开启DMA中断，需要用户自行配置DMA中断优先级
+    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
+		
 }
+
 /**
-  * @brief  ADC中断优先级配置函数
+  * @brief  DMA中断优先级配置函数
   * @param  无
   * @retval 无
+  * @note 想要使用D-Cache必须要配置DMA中断优先级
   */  
-void Rheostat_ADC_NVIC_Config(void)
+void Rheostat_DMA_NVIC_Config(void)
 {
-    HAL_NVIC_SetPriority(Rheostat_ADC1_IRQ, 0, 0);
-    HAL_NVIC_EnableIRQ(Rheostat_ADC1_IRQ);
+  HAL_NVIC_SetPriority(Rheostat_ADC1_DMA_IRQ, 1, 1);
+  HAL_NVIC_EnableIRQ(Rheostat_ADC1_DMA_IRQ);
 }
 
 /**
@@ -177,16 +180,13 @@ void Rheostat_ADC_NVIC_Config(void)
   */
 void ADC_Init(void)
 {
-    
-    ADC_GPIO_Mode_Config();
-  
-    ADC_Mode_Config();
-	//使能ADC1
-    ADC_Enable(&ADC_Handle);
-	
-    HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*)&ADC_ConvertedValue, 1);
-  
-    HAL_ADC_Start(&ADC_Handle);
+	ADC_GPIO_Mode_Config();
+
+	ADC_Mode_Config();
+	//DMA中断优先级配置
+	Rheostat_DMA_NVIC_Config();
+	//软件触发ADC采样
+	HAL_ADC_Start(&ADC_Handle);
 }
 
 /**
@@ -196,8 +196,8 @@ void ADC_Init(void)
   */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 {
-  /* 获取结果 */
-    ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle); 
+	/* 获取结果 */
+	ADC_ConvertedValue = HAL_ADC_GetValue(&ADC_Handle);
 }
 /*********************************************END OF FILE**********************/
 

@@ -18,12 +18,12 @@
 #define RHEOSTAT_ADC_DMA_Base                       DMA1_Stream1
 #define RHEOSTAT_ADC_DMA_Request                    DMA_REQUEST_ADC3
 //DMA中断服务函数
-#define RHEOSTAT_ADC_DMA_IRQHandler                 DMA1_Stream1_IRQHandler
+//#define RHEOSTAT_ADC_DMA_IRQHandler                 DMA1_Stream1_IRQHandler
 
-#define Rheostat_ADC1_IRQ                          ADC3_IRQn
+#define Rheostat_ADC1_DMA_IRQ                       DMA1_Stream1_IRQn
 
 void ADC_Init(void);
 
 uint16_t ADC_GetValue(void);
-void Rheostat_ADC_NVIC_Config(void);
+void Rheostat_DMA_NVIC_Config(void);
 #endif /* __ADC_H */
