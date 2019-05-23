@@ -61,8 +61,6 @@ int main(void)
   
   while(1)
 	{
-		/*关闭ADC3中断 */
-		HAL_NVIC_DisableIRQ(Rheostat_ADC_IRQ);
     LED2_TOGGLE;
     Delay(0xffffee);
     
@@ -74,6 +72,8 @@ int main(void)
 		HAL_NVIC_EnableIRQ(Rheostat_ADC_IRQ);
     /* ADC的采样值 / ADC精度 = 电压值 / 3.3 */
     ADC_vol = (float)(ADC_ConvertedValue*3.3/65536);
+		/*关闭ADC3中断 */
+		HAL_NVIC_DisableIRQ(Rheostat_ADC_IRQ);
 	}  
 }
 
