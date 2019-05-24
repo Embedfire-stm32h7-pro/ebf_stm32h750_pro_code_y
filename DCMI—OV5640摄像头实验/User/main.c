@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -31,6 +31,11 @@
 #define TASK_ENABLE 0
 #define NumOfTask 3
 
+#if USE_ExtFlash_Single
+__IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
+#endif
+
+extern uint32_t Task_Delay[NumOfTask];
 uint32_t Task_Delay[NumOfTask]={0};
 uint8_t dispBuf[100];
 uint8_t fps=0;
@@ -50,7 +55,7 @@ int main(void)
    DMA 时需注意 Cache 与 内存内容一致性的问题，
    具体注意事项请参考配套教程的 MPU 配置相关章节 */
   Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
 	/* 开启I-Cache */
 	SCB_EnableICache();
 	/* 开启D-Cache */
@@ -61,8 +66,8 @@ int main(void)
 	/* 配置串口1为：115200 8-N-1 */
 	UARTx_Config();	
 	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
+	printf("\r\n野火STM32H750 OV5640摄像头测试例程\r\n");
 	/*蓝灯亮，表示正在读写SDRAM测试*/
 	LED_BLUE;
 	/* LCD 端口初始化 */ 
@@ -92,7 +97,7 @@ int main(void)
 	
 	LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
 	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
-	CAMERA_DEBUG("STM32H743 DCMI 驱动OV5640例程");
+	CAMERA_DEBUG("STM32H750 DCMI 驱动OV5640例程");
 	I2CMaster_Init();
 	OV5640_HW_Init();			
 	//初始化 I2C
