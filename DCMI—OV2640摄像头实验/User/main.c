@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -30,6 +30,8 @@
 #define TASK_ENABLE 0
 #define NumOfTask 3
 
+__IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
+
 extern uint32_t Task_Delay[NumOfTask];
 uint32_t Task_Delay[NumOfTask]={0};
 uint8_t dispBuf[100];
@@ -50,8 +52,8 @@ int main(void)
 	UARTx_Config();	
 	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0x0E);
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
+	printf("\r\n野火STM32H750 OV2640摄像头测试例程\r\n");
 	/*蓝灯亮，表示正在读写SDRAM测试*/
 	//LED_BLUE;
 	/* LCD 端口初始化 */ 
@@ -81,7 +83,7 @@ int main(void)
 	
 	LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
 	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
-	CAMERA_DEBUG("STM32H743 DCMI 驱动OV2640例程");
+	CAMERA_DEBUG("STM32H750 DCMI 驱动OV2640例程");
 		
 	//初始化 I2C
 	I2CMaster_Init(); 

@@ -23,12 +23,17 @@
 #include "./fonts//font12.c"
 #include "./fonts//font8.c"
 #include "./flash/bsp_qspi_flash.h"
-#include "./delay/core_delay.h"  
+#include "./delay/core_delay.h" 
+
+#include <string.h>
+#include <stdlib.h>
 
 #define POLY_X(Z)              ((int32_t)((Points + Z)->X))
 #define POLY_Y(Z)              ((int32_t)((Points + Z)->Y)) 
 
 #define ABS(X)  ((X) > 0 ? (X) : -(X))
+
+extern __IO uint8_t* qspi_addr;
 
 static LTDC_HandleTypeDef  Ltdc_Handler;
 static DMA2D_HandleTypeDef Dma2d_Handler;
@@ -1603,30 +1608,57 @@ static void LL_ConvertLineToARGB8888(void* pSrc, void* pDst, uint32_t xSize, uin
 	* @param  c ： 要获取的文字
   * @retval None.
   */
-int GetGBKCode_from_EXFlash(uint8_t * pBuffer, uint16_t c)
-{
-	unsigned char High8bit, Low8bit;
+int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
+{ 
+	unsigned char High8bit,Low8bit;
 	unsigned int pos;
+	int offset, GBKCODE_START_ADDRESS;
+	
+	static uint8_t everRead=0;
 
-	static uint8_t everRead = 0;
+	High8bit= c >> 8;     /* 取高8位数据 */
+	Low8bit= c & 0x00FF;  /* 取低8位数据 */		
 
-	/*第一次使用，初始化FLASH*/
-	if (everRead == 0)
-	{
-		QSPI_FLASH_Init();
-		everRead = 1;
-	}
-
-	High8bit = c >> 8;     /* 取高8位数据 */
-	Low8bit = c & 0x00FF;  /* 取低8位数据 */
-
+	offset = GetResOffset("GB2312_H2424.FON");
+	if(offset == -1)
+		printf("无法在FLASH中找到字库文件\r\n");
+	else
+		GBKCODE_START_ADDRESS = offset + RESOURCE_BASE_ADDR;
+	
 	/*GB2312 公式*/
-	pos = ((High8bit - 0xa1) * 94 + Low8bit - 0xa1) * 24 * 24 / 8;
-	BSP_QSPI_Read(pBuffer, GBKCODE_START_ADDRESS + pos, 24 * 24 / 8); //读取字库数据  
-	//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
+	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
+	memcpy(pBuffer, (uint8_t *)qspi_addr+GBKCODE_START_ADDRESS+pos, 24*24/8);
+//	BSP_QSPI_FastRead(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
 
-	return 0;
+	return 0;  
 
+}
+
+/**
+  * @brief  从FLASH中的目录查找相应的资源位置
+  * @param  res_base 目录在FLASH中的基地址
+  * @param  res_name[in] 要查找的资源名字
+  * @retval -1表示找不到，其余值表示资源在FLASH中的基地址
+  */
+int GetResOffset(const char *res_name)
+{
+  
+	int i,len;
+	CatalogTypeDef dir;
+	uint8_t CATALOG_BUF[CATALOG_SIZE];
+
+	len =strlen(res_name);
+	for(i=0;i<CATALOG_SIZE;i+=sizeof(CatalogTypeDef))
+	{
+		memcpy((uint8_t*)&dir, (uint8_t *)qspi_addr+RESOURCE_BASE_ADDR+i, sizeof(CatalogTypeDef));
+//		BSP_QSPI_FastRead((uint8_t*)&dir,RESOURCE_BASE_ADDR+i,sizeof(CatalogTypeDef));
+    
+		if(strncasecmp(dir.name,res_name,len)==0)
+		{
+			return dir.offset;
+		}
+	}
+	return -1;
 }
 
 #else
