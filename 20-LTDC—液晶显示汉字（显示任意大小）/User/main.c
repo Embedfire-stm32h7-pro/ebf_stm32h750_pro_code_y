@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -25,6 +25,11 @@
 void Delay(__IO uint32_t nCount); 
 
 void LCD_Test(void);
+
+#if USE_EXTFLASH_SINGLE
+__IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
+#endif
+
 /**
   * @brief  主函数
   * @param  无
@@ -35,13 +40,17 @@ int main(void)
 
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
+	/* 开启I-Cache */
+	SCB_EnableICache();
+	/* 开启D-Cache */
+	SCB_EnableDCache();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
 	UARTx_Config();	
 	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
+	printf("\r\n野火STM32H750 LTDC液晶显示中文测试例程\r\n");
 	/*蓝灯亮，表示正在读写SDRAM测试*/
 	LED_BLUE;
 	/* LCD 端口初始化 */ 
@@ -92,10 +101,10 @@ void LCD_Test(void)
 	/*选择字体*/
 	LCD_SetFont(&LCD_DEFAULT_FONT);
 
-	LCD_DisplayStringLineEx(0,5,16,16,(uint8_t* )"野火H743 16*16 ",0);
-	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )"野火H743  24*24 ");
-	LCD_DisplayStringLineEx(0,50,32,32,(uint8_t* )"野火H743  32*32 ",0);
-	LCD_DisplayStringLineEx(0,82,48,48,(uint8_t* )"野火H743  48*48 ",0);
+	LCD_DisplayStringLineEx(0,5,16,16,(uint8_t* )"野火H750 16*16 ",0);
+	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )"野火H750  24*24 ");
+	LCD_DisplayStringLineEx(0,50,32,32,(uint8_t* )"野火H750  32*32 ",0);
+	LCD_DisplayStringLineEx(0,82,48,48,(uint8_t* )"野火H750  48*48 ",0);
 
 	/*使用c标准库把变量转化成字符串*/
 	sprintf(dispBuff,"显示变量例子: testCount = %d ",testCNT);
@@ -119,7 +128,7 @@ void LCD_Test(void)
 	LCD_DrawLine(300,250,400,400);  
 	LCD_DrawLine(600,250,600,400);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -139,7 +148,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_DrawRect(200,350,50,200);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
@@ -160,7 +169,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillRect(200,350,50,200);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -176,7 +185,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_GREEN);
 	LCD_DrawCircle(350,350,75);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -193,7 +202,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
 	LCD_FillCircle(450,350,75);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -217,7 +226,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_TRANSPARENT);
 	LCD_FillCircle(400,350,75);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 
 	/*透明效果 背景层操作*/
 
@@ -236,7 +245,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillCircle(350,350,75);
 
-	Delay(0xFFFFFF);
+	Delay(0xFFFFFEE);
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
 

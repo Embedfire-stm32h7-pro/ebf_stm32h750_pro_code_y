@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火  STM32 H743 开发板  
+  * 实验平台:野火  STM32 H750 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -24,6 +24,9 @@
 #include "./fonts//font8.c"
 #include "./flash/bsp_qspi_flash.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 #define POLY_X(Z)              ((int32_t)((Points + Z)->X))
 #define POLY_Y(Z)              ((int32_t)((Points + Z)->Y)) 
 
@@ -31,6 +34,10 @@
 
 static LTDC_HandleTypeDef  Ltdc_Handler;
 static DMA2D_HandleTypeDef Dma2d_Handler;
+
+#if USE_ExtFlash_Single
+extern __IO uint8_t* qspi_addr;
+#endif
 
 /* Default LCD configuration with LCD Layer 1 */
 uint32_t            ActiveLayer = 0;
@@ -76,7 +83,7 @@ static void LCD_GPIO_Config(void)
   LTDC_B2_GPIO_CLK_ENABLE();LTDC_B3_GPIO_CLK_ENABLE();LTDC_B4_GPIO_CLK_ENABLE();\
   LTDC_B5_GPIO_CLK_ENABLE();LTDC_B6_GPIO_CLK_ENABLE();LTDC_B7_GPIO_CLK_ENABLE();\
   LTDC_CLK_GPIO_CLK_ENABLE();LTDC_HSYNC_GPIO_CLK_ENABLE();LTDC_VSYNC_GPIO_CLK_ENABLE();\
-  LTDC_DE_GPIO_CLK_ENABLE();LTDC_DISP_GPIO_CLK_ENABLE();LTDC_BL_GPIO_CLK_ENABLE();
+  LTDC_DE_GPIO_CLK_ENABLE();LTDC_BL_GPIO_CLK_ENABLE();
 /* GPIO配置 */
 
  /* 红色数据线 */                        
@@ -199,16 +206,12 @@ static void LCD_GPIO_Config(void)
   GPIO_InitStruct.Alternate = LTDC_DE_AF;
   HAL_GPIO_Init(LTDC_DE_GPIO_PORT, &GPIO_InitStruct);
   
-  //背光BL 及液晶使能信号DISP
-  GPIO_InitStruct.Pin = LTDC_DISP_GPIO_PIN;                             
+  //背光BL
+  GPIO_InitStruct.Pin = LTDC_BL_GPIO_PIN;                             
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  
-  HAL_GPIO_Init(LTDC_DISP_GPIO_PORT, &GPIO_InitStruct);
-  
-  
-  GPIO_InitStruct.Pin = LTDC_BL_GPIO_PIN; 
+
   HAL_GPIO_Init(LTDC_BL_GPIO_PORT, &GPIO_InitStruct);
   
 }
@@ -1353,7 +1356,7 @@ void LCD_DisplayOn(void)
 {
   /* 开显示 */
   __HAL_LTDC_ENABLE(&Ltdc_Handler);
-  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_SET);/* LCD_DISP使能*/
+//  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_SET);/* LCD_DISP使能*/
   HAL_GPIO_WritePin(LTDC_BL_GPIO_PORT, LTDC_BL_GPIO_PIN, GPIO_PIN_SET);  /* 开背光*/
 }
 
@@ -1365,7 +1368,7 @@ void LCD_DisplayOff(void)
 {
   /* 关显示 */
   __HAL_LTDC_DISABLE(&Ltdc_Handler);
-  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_RESET); /* LCD_DISP禁能*/
+//  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_RESET); /* LCD_DISP禁能*/
   HAL_GPIO_WritePin(LTDC_BL_GPIO_PORT, LTDC_BL_GPIO_PIN, GPIO_PIN_RESET);/*关背光*/
 }
 
@@ -1612,26 +1615,60 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 { 
 	unsigned char High8bit,Low8bit;
 	unsigned int pos;
-
+	int offset, GBKCODE_START_ADDRESS;
+	
 	static uint8_t everRead=0;
-
-	/*第一次使用，初始化FLASH*/
-	if(everRead == 0)
-	{
-		QSPI_FLASH_Init();
-		everRead = 1;
-	}
 
 	High8bit= c >> 8;     /* 取高8位数据 */
 	Low8bit= c & 0x00FF;  /* 取低8位数据 */		
 
+#if USE_ExtFlash_Single
+	offset = GetResOffset("GB2312_H2424.FON");
+	if(offset == -1)
+		printf("无法在FLASH中找到字库文件\r\n");
+	else
+		GBKCODE_START_ADDRESS = offset + RESOURCE_BASE_ADDR;
+	
+	/*GB2312 公式*/
+	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
+	memcpy(pBuffer, (uint8_t *)qspi_addr+GBKCODE_START_ADDRESS+pos, 24*24/8);//读取字库数据  
+#else
 	/*GB2312 公式*/
 	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
 	BSP_QSPI_FastRead(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
-//		  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
-
+#endif
 	return 0;  
 
+}
+
+/**
+  * @brief  从FLASH中的目录查找相应的资源位置
+  * @param  res_base 目录在FLASH中的基地址
+  * @param  res_name[in] 要查找的资源名字
+  * @retval -1表示找不到，其余值表示资源在FLASH中的基地址
+  */
+int GetResOffset(const char *res_name)
+{
+  
+	int i,len;
+	CatalogTypeDef dir;
+	uint8_t CATALOG_BUF[CATALOG_SIZE];
+
+	len =strlen(res_name);
+	for(i=0;i<CATALOG_SIZE;i+=sizeof(CatalogTypeDef))
+	{
+#if USE_ExtFlash_Single
+		memcpy((uint8_t*)&dir, (uint8_t *)qspi_addr+RESOURCE_BASE_ADDR+i, sizeof(CatalogTypeDef));
+#else
+		BSP_QSPI_FastRead((uint8_t*)&dir,RESOURCE_BASE_ADDR+i,sizeof(CatalogTypeDef));
+#endif
+    
+		if(strncasecmp(dir.name,res_name,len)==0)
+		{
+			return dir.offset;
+		}
+	}
+	return -1;
 }
 
 #else
