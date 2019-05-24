@@ -39,19 +39,23 @@ int main(void)
 	SystemClock_Config();
   
   /* 配置 MPU */
-  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+//  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
   SCB_EnableDCache();    // 使能数据 Cache
-  
+	
+	/* H750XBH6的ADC3_CH1使用的是PC3_C，与PC3是两个不同的引脚，通过一个模拟开关连接，使用时需要切换 */
+  /* PC3_C ------> ADC3_INP1  */
+  HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PA0, SYSCFG_SWITCH_PA0_CLOSE);  
+	
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();	
 	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-	printf("\r\n野火STM32H743 LTDC液晶显示英文测试例程\r\n");
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
+	printf("\r\n野火STM32H750 LTDC液晶显示英文测试例程\r\n");
 	/*蓝灯亮*/
 	LED_BLUE;
 	/* LCD 端口初始化 */ 
@@ -109,7 +113,7 @@ void LCD_Test(void)
 	LCD_DisplayStringLine(5,(uint8_t* )"no need extern driver,RGB888,24bits data bus");
 	LCD_DisplayStringLine(6,(uint8_t* )"Touch pad use IIC to communicate");
 	
-	{		
+//	{		
 	testCNT++;
 	memset(dispBuff,0,100);
 	/*使用c标准库把变量转化成字符串*/
@@ -135,7 +139,7 @@ void LCD_Test(void)
 	LCD_DrawLine(300,250,400,400);  
 	LCD_DrawLine(600,250,600,400);
 
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -155,7 +159,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_DrawRect(200,350,50,200);
 
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
@@ -176,7 +180,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillRect(200,350,50,200);
 
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -192,7 +196,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_GREEN);
 	LCD_DrawCircle(350,350,75);
 
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -209,7 +213,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
 	LCD_FillCircle(450,350,75);
 
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -233,7 +237,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_TRANSPARENT);
 	LCD_FillCircle(400,350,75);
 	
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 	
 	/*透明效果 背景层操作*/
 
@@ -252,10 +256,10 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillCircle(350,350,75);
 	
-	Delay(0xFFFFFFF);
+	Delay(0xFFFFFEE);
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
-	}
+//	}
 
 }
 
