@@ -39,8 +39,8 @@ int main(void)
 	SystemClock_Config();
   
   /* 配置 MPU */
-//  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-//  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
   SCB_EnableDCache();    // 使能数据 Cache
@@ -139,7 +139,7 @@ void LCD_Test(void)
 	LCD_DrawLine(300,250,400,400);  
 	LCD_DrawLine(600,250,600,400);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -159,7 +159,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_DrawRect(200,350,50,200);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
@@ -180,7 +180,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillRect(200,350,50,200);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -196,7 +196,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_GREEN);
 	LCD_DrawCircle(350,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -213,7 +213,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
 	LCD_FillCircle(450,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -237,7 +237,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_TRANSPARENT);
 	LCD_FillCircle(400,350,75);
 	
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 	
 	/*透明效果 背景层操作*/
 
@@ -256,7 +256,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillCircle(350,350,75);
 	
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
 //	}
