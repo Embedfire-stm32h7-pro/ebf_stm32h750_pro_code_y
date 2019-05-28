@@ -419,16 +419,57 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
 }
 
 /**
-  * @brief  ²Á³ýQSPI´æ´¢Æ÷µÄÖ¸¶¨¿é 
-  * @param  BlockAddress: ÐèÒª²Á³ýµÄ¿éµØÖ·  
+  * @brief  ²Á³ýQSPI´æ´¢Æ÷µÄÖ¸¶¨ÉÈÇø 
+  * @param  SectorAddress: ÐèÒª²Á³ýµÄÉÈÇøµØÖ·  
   * @retval QSPI´æ´¢Æ÷×´Ì¬
   */
-uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress)
+uint8_t BSP_QSPI_Erase_Sector(uint32_t SectorAddress)
 {
 	QSPI_CommandTypeDef s_command;
 	/* ³õÊ¼»¯²Á³ýÃüÁî */
 	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-	s_command.Instruction       = SECTOR_ERASE_CMD_4BYTE;
+	s_command.Instruction       = SECTOR_ERASE_CMD;
+	s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
+	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
+	s_command.Address           = SectorAddress;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode          = QSPI_DATA_NONE;
+	s_command.DummyCycles       = 0;
+	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+	/* ÆôÓÃÐ´²Ù×÷ */
+	if (QSPI_WriteEnable() != QSPI_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* ·¢ËÍÃüÁî */
+	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* ÅäÖÃ×Ô¶¯ÂÖÑ¯Ä£Ê½µÈ´ý²Á³ý½áÊø */  
+	if (QSPI_AutoPollingMemReady(W25Q256JV_SECTOR_ERASE_MAX_TIME) != QSPI_OK)
+	{
+		return QSPI_ERROR;
+	}
+	return QSPI_OK;
+}
+
+/**
+  * @brief  ²Á³ýQSPI´æ´¢Æ÷µÄÖ¸¶¨¿é£¬µ¥¿é´óÐ¡32k 
+  * @param  BlockAddress: ÐèÒª²Á³ýµÄ¿éµØÖ· 
+  * @retval QSPI´æ´¢Æ÷×´Ì¬
+  */
+uint8_t BSP_QSPI_Erase_Block32(uint32_t BlockAddress)
+{
+	QSPI_CommandTypeDef s_command;
+	/* ³õÊ¼»¯²Á³ýÃüÁî */
+	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction       = BLOCK32_ERASE_CMD;
 	s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
 	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
 	s_command.Address           = BlockAddress;
@@ -444,19 +485,59 @@ uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress)
 	{
 		return QSPI_ERROR;
 	}
-  //QSPI_FLASH_Wait_Busy();
+
 	/* ·¢ËÍÃüÁî */
 	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
 	{
 		return QSPI_ERROR;
 	}
-  //QSPI_FLASH_Wait_Busy();
+
 	/* ÅäÖÃ×Ô¶¯ÂÖÑ¯Ä£Ê½µÈ´ý²Á³ý½áÊø */  
-	if (QSPI_AutoPollingMemReady(W25Q256JV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
+	if (QSPI_AutoPollingMemReady(W25Q256JV_SECTOR_ERASE_MAX_TIME) != QSPI_OK)
 	{
 		return QSPI_ERROR;
 	}
-  
+	return QSPI_OK;
+}
+
+/**
+  * @brief  ²Á³ýQSPI´æ´¢Æ÷µÄÖ¸¶¨¿é£¬µ¥¿é´óÐ¡64k
+  * @param  BlockAddress: ÐèÒª²Á³ýµÄ¿éµØÖ·
+  * @retval QSPI´æ´¢Æ÷×´Ì¬
+  */
+uint8_t BSP_QSPI_Erase_Block64(uint32_t BlockAddress)
+{
+	QSPI_CommandTypeDef s_command;
+	/* ³õÊ¼»¯²Á³ýÃüÁî */
+	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction       = BLOCK64_ERASE_CMD_4BYTE;
+	s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
+	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
+	s_command.Address           = BlockAddress;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode          = QSPI_DATA_NONE;
+	s_command.DummyCycles       = 0;
+	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+	/* ÆôÓÃÐ´²Ù×÷ */
+	if (QSPI_WriteEnable() != QSPI_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* ·¢ËÍÃüÁî */
+	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* ÅäÖÃ×Ô¶¯ÂÖÑ¯Ä£Ê½µÈ´ý²Á³ý½áÊø */  
+	if (QSPI_AutoPollingMemReady(W25Q256JV_SECTOR_ERASE_MAX_TIME) != QSPI_OK)
+	{
+		return QSPI_ERROR;
+	}
 	return QSPI_OK;
 }
 
@@ -546,8 +627,8 @@ uint8_t BSP_QSPI_GetInfo(QSPI_Info* pInfo)
 {
 	/* ÅäÖÃ´æ´¢Æ÷ÅäÖÃ½á¹¹ */
 	pInfo->FlashSize          = W25Q256JV_FLASH_SIZE;
-	pInfo->EraseSectorSize    = W25Q256JV_SUBSECTOR_SIZE;
-	pInfo->EraseSectorsNumber = (W25Q256JV_FLASH_SIZE/W25Q256JV_SUBSECTOR_SIZE);
+	pInfo->EraseSectorSize    = W25Q256JV_SECTOR_SIZE;
+	pInfo->EraseSectorsNumber = (W25Q256JV_FLASH_SIZE/W25Q256JV_SECTOR_SIZE);
 	pInfo->ProgPageSize       = W25Q256JV_PAGE_SIZE;
 	pInfo->ProgPagesNumber    = (W25Q256JV_FLASH_SIZE/W25Q256JV_PAGE_SIZE);
 	return QSPI_OK;

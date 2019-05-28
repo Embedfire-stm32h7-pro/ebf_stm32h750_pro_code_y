@@ -17,7 +17,7 @@
 
 /* W25Q256JV Micron memory */
 /* Size of the flash */
-#define QSPI_FLASH_SIZE            23     /* 地址总线宽度访问整个内存空间 */
+#define QSPI_FLASH_SIZE            24     /* 地址总线宽度访问整个内存空间 */
 #define QSPI_PAGE_SIZE             256
 
 /* QSPI Info */
@@ -34,9 +34,10 @@ typedef struct {
 /** 
   * @brief  W25Q256JV配置 
   */  
-#define W25Q256JV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
-#define W25Q256JV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
-#define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
+#define W25Q256JV_FLASH_SIZE                  0x4000000 /* 128 MBits => 16MBytes */
+#define W25Q256JV_BLOCK_SIZE                  0x10000
+#define W25Q256JV_SECTOR_SIZE                 0x1000   /* 256 sectors of 64KBytes */
+//#define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
 #define W25Q256JV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
 
 #define W25Q256JV_DUMMY_CYCLES_READ           4
@@ -64,6 +65,11 @@ typedef struct {
 
 /* 读操作 */
 #define READ_CMD_4BYTE                       0x03
+#define FAST_READ_CMD                        0x0B
+#define DUAL_OUT_FAST_READ_CMD               0x3B
+#define DUAL_INOUT_FAST_READ_CMD             0xBB
+#define QUAD_OUT_FAST_READ_CMD               0x6B
+#define QUAD_INOUT_FAST_READ_CMD             0xEB
 #define QUAD_INOUT_FAST_READ_CMD_4BYTE       0xEC
 
 /* 写操作 */
@@ -71,26 +77,29 @@ typedef struct {
 #define WRITE_DISABLE_CMD                    0x04
 
 /* 寄存器操作 */
-#define READ_STATUS_REG1_CMD                  0x05
-#define READ_STATUS_REG2_CMD                  0x35
-#define READ_STATUS_REG3_CMD                  0x15
+#define READ_STATUS_REG1_CMD                 0x05
+#define READ_STATUS_REG2_CMD                 0x35
+#define READ_STATUS_REG3_CMD                 0x15
 
-#define WRITE_STATUS_REG1_CMD                 0x01
-#define WRITE_STATUS_REG2_CMD                 0x31
-#define WRITE_STATUS_REG3_CMD                 0x11
+#define WRITE_STATUS_REG1_CMD                0x01
+#define WRITE_STATUS_REG2_CMD                0x31
+#define WRITE_STATUS_REG3_CMD                0x11
 /* 编程操作 */
-#define QUAD_INPUT_PAGE_PROG_CMD_4BYTE        0x34
-#define EXT_QUAD_IN_FAST_PROG_CMD_4BYTE       0x12
+#define PAGE_PROG_CMD                        0x02
+#define QUAD_INPUT_PAGE_PROG_CMD_4BYTE       0x34
+#define EXT_QUAD_IN_FAST_PROG_CMD_4BYTE      0x12
+#define ENTER_4_BYTE_ADDR_MODE_CMD           0xB7
 
 /* 擦除操作 */
-#define SECTOR_ERASE_CMD_4BYTE                0x21 
-#define BLOCK64K_ERASE_CMD_4BYTE              0xDC 
-#define CHIP_ERASE_CMD                        0xC7
+#define SECTOR_ERASE_CMD                     0x20    //0xD8擦：64K    0x52擦：32K     0x20擦：4K 
+#define SECTOR_ERASE_CMD_4BYTE               0x21 
+#define BLOCK32_ERASE_CMD                    0x52
+#define BLOCK64_ERASE_CMD                    0xD8
+#define BLOCK64_ERASE_CMD_4BYTE              0xDC
+#define CHIP_ERASE_CMD                       0xC7
 
 //#define PROG_ERASE_RESUME_CMD                 0x7A
 //#define PROG_ERASE_SUSPEND_CMD                0x75
-
-#define ENTER_4_BYTE_ADDR_MODE_CMD            0xB7
 
 /* 状态寄存器标志 */
 #define W25Q256JV_FSR_BUSY                    ((uint8_t)0x0101)    /*!< busy */
@@ -163,12 +172,14 @@ typedef struct {
 
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
-uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t BSP_QSPI_Erase_Sector(uint32_t SectorAddress);
+uint8_t BSP_QSPI_Erase_Block32(uint32_t BlockAddress);
+uint8_t BSP_QSPI_Erase_Block64(uint32_t BlockAddress);
+uint8_t BSP_QSPI_Erase_Chip(void);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 
-uint8_t BSP_QSPI_Erase_Chip(void);
 static uint8_t QSPI_WriteEnable          (void);
 static uint8_t QSPI_AutoPollingMemReady  (uint32_t Timeout);
 

@@ -1839,21 +1839,19 @@ int main(void)
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
 	LED_BLUE;
-	
+
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
   
-	printf("\r\n这是一个16M串行flash(W25Q256)实验(QSPI驱动) \r\n");
+	printf("\r\n这是一个32M串行flash(W25Q256)内存映射模式读写实验(QSPI驱动) \r\n");
 	
-	/* 16M串行flash W25Q256初始化 */
+	/* 32M串行flash W25Q256初始化 */
 	QSPI_FLASH_Init();
-
 	
 	if (1)
 	{	
 		printf("\r\n检测到QSPI FLASH W25Q256 !\r\n");
-		printf("\r\n正在芯片擦除的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
-    
+		printf("\r\n正在芯片擦除的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);   
     
     state = BSP_QSPI_Erase_Block(addr);
     if(state == QSPI_OK)
@@ -1868,7 +1866,8 @@ int main(void)
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
 		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
-    printf("\r\n写入成功!\r\n");    
+    printf("\r\n写入成功!\r\n");  
+		
     /* QSPI memory reset */
     if (QSPI_ResetMemory() != QSPI_OK)
     {
@@ -1879,8 +1878,7 @@ int main(void)
       return QSPI_ERROR;
     }
     printf("\r\n---使用memcpy函数读取QPSI的内容----\n\r");
-    memcpy(Rx_Buffer,(uint8_t *)qspi_addr,BufferSize);
-        
+    memcpy(Rx_Buffer,(uint8_t *)qspi_addr,BufferSize);  
 		/* 检查写入的数据与读出的数据是否相等 */
 		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
 		
@@ -1892,17 +1890,18 @@ int main(void)
 		else
 		{        
 			LED_RED;
-			printf("\r\n读写(memcpy)测试失败!\n\r");
+			printf("\r\n读写(memcpy)测试失败!");
 		}
-    printf("\r\n-------使用指针读取QPSI的内容-------\n\r");
-    
+    printf("\r\n-------使用指针读取QPSI的内容-------");
+		
     memset(Rx_Buffer,0,BufferSize);
-    
+		
     for(int i = 0; i < BufferSize; i++)
     { 
       Rx_Buffer[i] = *qspi_addr;
       qspi_addr++;
-    }    
+    }
+		
 		/* 检查写入的数据与读出的数据是否相等 */
 		TransferStatus1 = Buffercmp(Tx_Buffer, Rx_Buffer, BufferSize);
 		

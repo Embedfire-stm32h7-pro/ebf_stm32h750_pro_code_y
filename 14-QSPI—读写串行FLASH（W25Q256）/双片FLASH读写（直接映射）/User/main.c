@@ -1855,7 +1855,7 @@ int main(void)
 		printf("\r\n正在芯片擦除的%d~%d的内容!\r\n", addr, addr+W25Q256JV_PAGE_SIZE);
     
     
-    state = BSP_QSPI_Erase_Block(addr);
+    state = BSP_QSPI_Erase_Sector(addr);
     if(state == QSPI_OK)
       printf("\r\n擦除成功!\r\n");
     else

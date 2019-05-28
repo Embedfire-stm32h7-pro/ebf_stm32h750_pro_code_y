@@ -23,8 +23,8 @@
 
 typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 /* 获取缓冲区的长度 */
-#define TxBufferSize1   (countof(TxBuffer1) - 1)
-#define RxBufferSize1   (countof(TxBuffer1) - 1)
+#define TxBufferSize1   (countof(Tx_Buffer) - 1)
+#define RxBufferSize1   (countof(Tx_Buffer) - 1)
 #define countof(a)      (sizeof(a) / sizeof(*(a)))
 #define  BufferSize     (countof(Tx_Buffer)-1)
 
@@ -1827,6 +1827,7 @@ uint8_t state = QSPI_ERROR;
   */
 int main(void)
 {
+	int t0,t1,i;
   uint32_t addr = FLASH_WriteAddress ;
 	int state = QSPI_ERROR;
 	/* 使能指令缓存 */
@@ -1842,9 +1843,9 @@ int main(void)
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();
   
-	printf("\r\n这是一个16M串行flash(W25Q256)实验(QSPI驱动) \r\n");
+	printf("\r\n这是一个32M串行flash(W25Q256)间接模式读写实验(QSPI驱动) \r\n");
 	
-	/* 16M串行flash W25Q256初始化 */
+	/* 32M串行flash W25Q256初始化 */
 	QSPI_FLASH_Init();
 	
 	/* 获取 Flash Device ID */
@@ -1881,7 +1882,7 @@ int main(void)
     printf("\r\n正在向芯片%d地址写入数据，大小为%d!\r\n", addr, BufferSize);
 		/* 将发送缓冲区的数据写到flash中 */
 		BSP_QSPI_Write(Tx_Buffer, addr, BufferSize);
-    printf("\r\n写入成功!\r\n");
+		printf("\r\n写入成功!\r\n");
     
     printf("\r\n正在向芯片%d地址读取大小为%d的数据!\r\n", addr, BufferSize);
 		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
@@ -1894,7 +1895,7 @@ int main(void)
 		if( PASSED == TransferStatus1 )
 		{    
 			LED_GREEN;
-			printf("\r\n读写%d地址测试成功!\n\r", addr);
+			printf("\r\n读写%d地址测试成功!\r\n", addr);
 		}
 		else
 		{        
