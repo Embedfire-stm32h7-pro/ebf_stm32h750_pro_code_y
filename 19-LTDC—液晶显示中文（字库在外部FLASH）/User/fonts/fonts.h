@@ -98,9 +98,6 @@ extern sFONT Font8;
 #if GBKCODE_FLASH
 /*使用FLASH字模*/
 /*=========================================================================================*/
-/*中文字库存储在FLASH的起始地址*/
-/*FLASH*/
-//#define GBKCODE_START_ADDRESS   1360*4096
 /* 资源烧录到的FLASH基地址（目录地址） */
 #define RESOURCE_BASE_ADDR	(16*1024*1024)
 /* 存储在FLASH中的资源目录大小 */
