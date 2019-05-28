@@ -35,9 +35,7 @@
 static LTDC_HandleTypeDef  Ltdc_Handler;
 static DMA2D_HandleTypeDef Dma2d_Handler;
 
-#if USE_EXTFLASH_SINGLE
 extern __IO uint8_t* qspi_addr;
-#endif
 
 /* Default LCD configuration with LCD Layer 1 */
 uint32_t            ActiveLayer = 0;
@@ -1801,10 +1799,18 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 	
 	static uint8_t everRead=0;
 
+#if USE_InFlash
+	if(everRead == 0)
+	{
+		QSPI_FLASH_Init();
+		QSPI_EnableMemoryMappedMode();
+		everRead = 1;
+	}
+#endif
+
 	High8bit= c >> 8;     /* 取高8位数据 */
 	Low8bit= c & 0x00FF;  /* 取低8位数据 */		
 
-#if USE_EXTFLASH_SINGLE
 	offset = GetResOffset("GB2312_H2424.FON");
 	if(offset == -1)
 		printf("无法在FLASH中找到字库文件\r\n");
@@ -1814,13 +1820,7 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 	/*GB2312 公式*/
 	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
 	memcpy(pBuffer, (uint8_t *)qspi_addr+GBKCODE_START_ADDRESS+pos, 24*24/8);//读取字库数据  
-#else
-	/*GB2312 公式*/
-	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
-	BSP_QSPI_FastRead(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
-#endif
 	return 0;  
-
 }
 
 /**
@@ -1831,7 +1831,6 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
   */
 int GetResOffset(const char *res_name)
 {
-  
 	int i,len;
 	CatalogTypeDef dir;
 	uint8_t CATALOG_BUF[CATALOG_SIZE];
@@ -1839,11 +1838,7 @@ int GetResOffset(const char *res_name)
 	len =strlen(res_name);
 	for(i=0;i<CATALOG_SIZE;i+=sizeof(CatalogTypeDef))
 	{
-#if USE_EXTFLASH_SINGLE
 		memcpy((uint8_t*)&dir, (uint8_t *)qspi_addr+RESOURCE_BASE_ADDR+i, sizeof(CatalogTypeDef));
-#else
-		BSP_QSPI_FastRead((uint8_t*)&dir,RESOURCE_BASE_ADDR+i,sizeof(CatalogTypeDef));
-#endif
     
 		if(strncasecmp(dir.name,res_name,len)==0)
 		{

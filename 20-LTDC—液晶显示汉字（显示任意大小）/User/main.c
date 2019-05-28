@@ -26,9 +26,7 @@ void Delay(__IO uint32_t nCount);
 
 void LCD_Test(void);
 
-#if USE_EXTFLASH_SINGLE
 __IO uint8_t* qspi_addr = (__IO uint8_t*)(0x90000000);
-#endif
 
 /**
   * @brief  主函数
@@ -128,7 +126,7 @@ void LCD_Test(void)
 	LCD_DrawLine(300,250,400,400);  
 	LCD_DrawLine(600,250,600,400);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -148,7 +146,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_DrawRect(200,350,50,200);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
@@ -169,7 +167,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillRect(200,350,50,200);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -185,7 +183,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_GREEN);
 	LCD_DrawCircle(350,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -202,7 +200,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_GREEN,LCD_COLOR_BLACK);
 	LCD_FillCircle(450,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
@@ -226,7 +224,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_RED,LCD_COLOR_TRANSPARENT);
 	LCD_FillCircle(400,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 
 	/*透明效果 背景层操作*/
 
@@ -245,7 +243,7 @@ void LCD_Test(void)
 	LCD_SetColors(LCD_COLOR_BLUE,LCD_COLOR_BLACK);
 	LCD_FillCircle(350,350,75);
 
-	Delay(0xFFFFFEE);
+	Delay(0x1FFFFFF);
 	LCD_SetColors(LCD_COLOR_BLACK,LCD_COLOR_BLACK);
 	LCD_FillRect(0,200,LCD_PIXEL_WIDTH,LCD_PIXEL_HEIGHT-200);
 
