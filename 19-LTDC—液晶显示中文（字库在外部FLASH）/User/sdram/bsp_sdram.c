@@ -54,7 +54,12 @@ static void SDRAM_GPIO_Config(void)
 	FMC_D6_GPIO_CLK(); FMC_D7_GPIO_CLK() ; FMC_D8_GPIO_CLK() ;
 	FMC_D9_GPIO_CLK(); FMC_D10_GPIO_CLK(); FMC_D11_GPIO_CLK();
 	FMC_D12_GPIO_CLK();FMC_D13_GPIO_CLK(); FMC_D14_GPIO_CLK();
-	FMC_D15_GPIO_CLK();  
+	FMC_D15_GPIO_CLK();FMC_D16_GPIO_CLK(); FMC_D17_GPIO_CLK(); 
+	FMC_D18_GPIO_CLK();FMC_D19_GPIO_CLK(); FMC_D20_GPIO_CLK();
+	FMC_D21_GPIO_CLK();FMC_D22_GPIO_CLK(); FMC_D23_GPIO_CLK();
+	FMC_D24_GPIO_CLK();FMC_D25_GPIO_CLK(); FMC_D26_GPIO_CLK();
+	FMC_D27_GPIO_CLK();FMC_D28_GPIO_CLK(); FMC_D29_GPIO_CLK();
+	FMC_D30_GPIO_CLK();FMC_D31_GPIO_CLK();	
 	/*控制信号线*/
 	FMC_CS_GPIO_CLK() ; FMC_BA0_GPIO_CLK(); FMC_BA1_GPIO_CLK() ;
 	FMC_WE_GPIO_CLK() ; FMC_RAS_GPIO_CLK(); FMC_CAS_GPIO_CLK();
@@ -155,6 +160,54 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_D15_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_D15_GPIO_PORT, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.Pin = FMC_D16_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D16_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D17_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D17_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D18_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D18_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D19_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D19_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D20_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D20_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D21_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D21_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D22_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D22_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D23_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D23_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D24_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D24_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D25_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D25_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D26_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D26_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D27_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D27_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D28_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D28_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D29_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D29_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D30_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D30_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_D31_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_D31_GPIO_PORT, &GPIO_InitStructure);
 
 	/*控制信号线*/
 	GPIO_InitStructure.Pin = FMC_CS_GPIO_PIN; 
@@ -186,6 +239,12 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_LDQM_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_LDQM_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_UDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_UDQM2_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_LDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_LDQM2_GPIO_PORT, &GPIO_InitStructure);
 		
 }
 
@@ -223,7 +282,7 @@ static void SDRAM_InitSequence(void)
 	/* 配置命令：自动刷新 */   
 	Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
 	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 4;
+	Command.AutoRefreshNumber = 8;
 	Command.ModeRegisterDefinition = 0;
 	/* 发送配置命令 */
 	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);
@@ -247,10 +306,10 @@ static void SDRAM_InitSequence(void)
 	/* Step 6 ----------------------------------------------------------------*/
 
 	/* 设置刷新计数器 */
-	/* 刷新周期=64ms/4096行=15.625us */
-	/* COUNT=(15.625us x Freq) - 20 */
+	/* 刷新周期=64ms/8192行=7.8125us */
+	/* COUNT=(7.8125us x Freq) - 20 */
 	/* 设置自刷新速率 */
-	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855); 
+	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 824); 
 }
 
 
@@ -262,7 +321,6 @@ static void SDRAM_InitSequence(void)
   */
 void SDRAM_Init(void)
 {
-
   FMC_SDRAM_TimingTypeDef SdramTiming;
 	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
 	
@@ -291,28 +349,27 @@ void SDRAM_Init(void)
   hsdram1.Instance = FMC_SDRAM_DEVICE;
   /* hsdram1结构体初始化*/
   hsdram1.Init.SDBank = FMC_SDRAM_BANK2;
-  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9;       // SDRAM 列数
-  hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;            // SDRAM 行数
-  hsdram1.Init.MemoryDataWidth = SDRAM_MEMORY_WIDTH;                 // 总线数据宽度为 16 位
-  hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;    // 4 个扇区
-  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;                 // 列地址选通信延时
-  hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE; // 禁止写保护
-  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;             // SDRAM 时钟 133MHz
-  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;                  // 使能突发传输模式
-  hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1;              // 读通道延时
+  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9;//SDRAM列数
+  hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;//SDRAM行数
+  hsdram1.Init.MemoryDataWidth = SDRAM_MEMORY_WIDTH;//总线数据宽度为32位
+  hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;//4个扇区
+  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;//列地址选通信延时
+  hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE;//禁止写保护
+  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;//SDRAM时钟120MHz
+  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;     //使能突发传输模式
+  hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1; //读通道延时
   /* SDRAM时序 */
-  SdramTiming.LoadToActiveDelay = 2;       // 加载模式寄存器命令与行有效或刷新命令之间的延迟
-  SdramTiming.ExitSelfRefreshDelay = 8;    // 退出自我刷新到行有效命令之间的延迟
-  SdramTiming.SelfRefreshTime = 5;         // 行有效与预充电命令之间的延迟
-  SdramTiming.RowCycleDelay = 8;           // 两个刷新命令或两个行有效命令之间的延迟
-  SdramTiming.WriteRecoveryTime = 2;       // 写入命令到预充电命令之间的延迟
-  SdramTiming.RPDelay = 2;                 // 预充电与行有效命令之间的延迟
-  SdramTiming.RCDDelay = 2;                // 行有效与列读写命令之间的延迟
+  SdramTiming.LoadToActiveDelay = 2;//加载模式寄存器命令与行有效或刷新命令之间的延迟
+  SdramTiming.ExitSelfRefreshDelay = 8;//退出自我刷新到行有效命令之间的延迟
+  SdramTiming.SelfRefreshTime = 5;//行有效与预充电命令之间的延迟
+  SdramTiming.RowCycleDelay = 8;//两个刷新命令或两个行有效命令之间的延迟
+  SdramTiming.WriteRecoveryTime = 2;//写入命令到预充电命令之间的延迟
+  SdramTiming.RPDelay = 2;//预充电与行有效命令之间的延迟
+  SdramTiming.RCDDelay = 2;//行有效与列读写命令之间的延迟
 
   HAL_SDRAM_Init(&hsdram1, &SdramTiming);  
   /* FMC SDRAM 设备时序初始化 */
   SDRAM_InitSequence(); 
-  
 }
 
 
@@ -396,20 +453,20 @@ uint8_t SDRAM_Test(void)
 
   /*按8位格式读写数据，并校验*/
   
-  /* 把SDRAM数据全部重置为0 ，IS42S16400J_SIZE是以8位为单位的 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE; counter++)
+  /* 把SDRAM数据全部重置为0 ，W9825G6KH-6_SIZE是以8位为单位的 */
+  for (counter = 0x00; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
   
   /* 向整个SDRAM写入数据  8位 */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
+  for (counter = 0; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
   
   /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE;counter++ )
   {
     ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //从该地址读出数据
     
@@ -424,19 +481,19 @@ uint8_t SDRAM_Test(void)
   /*按16位格式读写数据，并检测*/
   
   /* 把SDRAM数据全部重置为0 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0x00; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
   }
   
   /* 向整个SDRAM写入数据  16位 */
-  for (counter = 0; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
   }
   
     /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE/2;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE/2;counter++ )
   {
     uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //从该地址读出数据
     
