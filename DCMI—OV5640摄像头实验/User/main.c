@@ -55,11 +55,13 @@ int main(void)
    DMA 时需注意 Cache 与 内存内容一致性的问题，
    具体注意事项请参考配套教程的 MPU 配置相关章节 */
   Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
-  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
+  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_128KB);
 	/* 开启I-Cache */
 	SCB_EnableICache();
 	/* 开启D-Cache */
 	SCB_EnableDCache();
+	/* 启动SysTick */
+	SysTick_Init();
 	
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
@@ -222,6 +224,24 @@ static void SystemClock_Config(void)
   {
     while(1) { ; }
   }
+}
+
+/**
+  * @brief  启动系统滴答定时器 SysTick
+  * @param  无
+  * @retval 无
+  */
+void SysTick_Init(void)
+{
+	/* SystemFrequency / 1000    1ms中断一次
+	 * SystemFrequency / 100000	 10us中断一次
+	 * SystemFrequency / 1000000 1us中断一次
+	 */
+	if (HAL_SYSTICK_Config(SystemCoreClock / 1000))
+	{ 
+		/* Capture error */ 
+		while (1);
+	}
 }
 
 /****************************END OF FILE***************************/

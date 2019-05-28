@@ -7,7 +7,7 @@
 
 
 //#define W9812G6JH_SIZE 0x1000000  //16M字节
-#define IS42S16400J_SIZE (64*1024*1024)  //64M字节，W9825G6
+#define IW9825G6_SIZE (64*1024*1024)  //64M字节，W9825G6
 
 /*SDRAM 的bank选择*/  
 #define FMC_BANK_SDRAM            FMC_Bank2_SDRAM  
@@ -302,6 +302,14 @@
 #define FMC_LDQM_GPIO_CLK()       __GPIOE_CLK_ENABLE()
 #define FMC_LDQM_GPIO_PIN         GPIO_PIN_0
 
+/*UDQM2 LDQM2*/
+#define FMC_UDQM2_GPIO_PORT        GPIOI
+#define FMC_UDQM2_GPIO_CLK()       __GPIOI_CLK_ENABLE()
+#define FMC_UDQM2_GPIO_PIN         GPIO_PIN_5
+
+#define FMC_LDQM2_GPIO_PORT       GPIOI
+#define FMC_LDQM2_GPIO_CLK()      __GPIOI_CLK_ENABLE()
+#define FMC_LDQM2_GPIO_PIN        GPIO_PIN_4
 /** @defgroup STM32429 SDRAM函数
   * @{
   */ 

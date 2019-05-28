@@ -202,7 +202,6 @@ void SysTick_Handler(void)
   */
 void DMA2_Stream1_IRQHandler(void)
 {
-	SCB_InvalidateDCache_by_Addr((uint32_t*)LCD_FB_START_ADDRESS,LCD_GetXSize()*LCD_GetYSize()/2);
   HAL_DMA_IRQHandler(&DMA_Handle_dcmi);
 }
 
@@ -213,6 +212,7 @@ void DMA2_Stream1_IRQHandler(void)
   */
 void DCMI_IRQHandler(void)
 {
+	SCB_InvalidateDCache_by_Addr((uint32_t*)LCD_FB_START_ADDRESS,LCD_GetXSize()*LCD_GetYSize()/2);
   HAL_DCMI_IRQHandler(&DCMI_Handle);
 }
 /* USER CODE END 1 */

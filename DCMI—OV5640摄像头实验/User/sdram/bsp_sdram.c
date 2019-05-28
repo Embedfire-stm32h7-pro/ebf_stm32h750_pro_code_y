@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火  STM32 H743 开发板  
+  * 实验平台:野火  STM32 H750 开发板  
   * 论坛    :http://www.chuxue123.com
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -59,7 +59,7 @@ static void SDRAM_GPIO_Config(void)
 	FMC_D21_GPIO_CLK();FMC_D22_GPIO_CLK(); FMC_D23_GPIO_CLK();
 	FMC_D24_GPIO_CLK();FMC_D25_GPIO_CLK(); FMC_D26_GPIO_CLK();
 	FMC_D27_GPIO_CLK();FMC_D28_GPIO_CLK(); FMC_D29_GPIO_CLK();
-	FMC_D30_GPIO_CLK();FMC_D31_GPIO_CLK();	  
+	FMC_D30_GPIO_CLK();FMC_D31_GPIO_CLK();	
 	/*控制信号线*/
 	FMC_CS_GPIO_CLK() ; FMC_BA0_GPIO_CLK(); FMC_BA1_GPIO_CLK() ;
 	FMC_WE_GPIO_CLK() ; FMC_RAS_GPIO_CLK(); FMC_CAS_GPIO_CLK();
@@ -113,6 +113,7 @@ static void SDRAM_GPIO_Config(void)
 	HAL_GPIO_Init(FMC_A12_GPIO_PORT, &GPIO_InitStructure);
 
 	/*数据信号线 针对引脚配置*/
+	/*数据信号线 针对引脚配置*/
 	GPIO_InitStructure.Pin = FMC_D0_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_D0_GPIO_PORT, &GPIO_InitStructure);
 
@@ -161,7 +162,7 @@ static void SDRAM_GPIO_Config(void)
 	GPIO_InitStructure.Pin = FMC_D15_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_D15_GPIO_PORT, &GPIO_InitStructure);
 
-  GPIO_InitStructure.Pin = FMC_D16_GPIO_PIN; 
+	GPIO_InitStructure.Pin = FMC_D16_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_D16_GPIO_PORT, &GPIO_InitStructure);
 
 	GPIO_InitStructure.Pin = FMC_D17_GPIO_PIN; 
@@ -208,7 +209,7 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_D31_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_D31_GPIO_PORT, &GPIO_InitStructure);
-  
+
 	/*控制信号线*/
 	GPIO_InitStructure.Pin = FMC_CS_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_CS_GPIO_PORT, &GPIO_InitStructure);
@@ -239,6 +240,12 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_LDQM_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_LDQM_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_UDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_UDQM2_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_LDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_LDQM2_GPIO_PORT, &GPIO_InitStructure);
 		
 }
 
@@ -368,6 +375,8 @@ void SDRAM_Init(void)
   
 }
 
+
+
 /**
   * @brief  以“字”为单位向sdram写入数据 
   * @param  pBuffer: 指向数据的指针 
@@ -448,19 +457,19 @@ uint8_t SDRAM_Test(void)
   /*按8位格式读写数据，并校验*/
   
   /* 把SDRAM数据全部重置为0 ，IS42S16400J_SIZE是以8位为单位的 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE; counter++)
+  for (counter = 0x00; counter < IW9825G6_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
   
   /* 向整个SDRAM写入数据  8位 */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
+  for (counter = 0; counter < IW9825G6_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
   
   /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE;counter++ )
+  for(counter = 0; counter<IW9825G6_SIZE;counter++ )
   {
     ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //从该地址读出数据
     
@@ -475,19 +484,19 @@ uint8_t SDRAM_Test(void)
   /*按16位格式读写数据，并检测*/
   
   /* 把SDRAM数据全部重置为0 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0x00; counter < IW9825G6_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
   }
   
   /* 向整个SDRAM写入数据  16位 */
-  for (counter = 0; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0; counter < IW9825G6_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
   }
   
     /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE/2;counter++ )
+  for(counter = 0; counter<IW9825G6_SIZE/2;counter++ )
   {
     uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //从该地址读出数据
     

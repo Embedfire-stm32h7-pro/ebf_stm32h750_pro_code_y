@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F767 开发板  
+  * 实验平台:秉火  STM32 H743 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -976,7 +976,7 @@ void OV5640_Init(void)
   HAL_DCMI_Init(&DCMI_Handle); 	
     
 	/* 配置中断 */
-  HAL_NVIC_SetPriority(DCMI_IRQn, 0, 5);
+  HAL_NVIC_SetPriority(DCMI_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DCMI_IRQn); 	
   //dma_memory 以16位数据为单位， dma_bufsize以32位数据为单位(即像素个数/2)
   OV5640_DMA_Config(LCD_FB_START_ADDRESS,LCD_GetXSize()*LCD_GetYSize()/2);	
@@ -1010,7 +1010,7 @@ void OV5640_DMA_Config(uint32_t DMA_Memory0BaseAddr,uint32_t DMA_BufferSize)
   /*DMA中断配置 */
   __HAL_LINKDMA(&DCMI_Handle, DMA_Handle, DMA_Handle_dcmi);
   
-  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
   
   HAL_DMA_Init(&DMA_Handle_dcmi);
