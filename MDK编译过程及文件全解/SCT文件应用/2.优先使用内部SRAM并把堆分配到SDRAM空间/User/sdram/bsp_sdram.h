@@ -308,7 +308,7 @@
 #define FMC_LDQM2_GPIO_PORT       GPIOI
 #define FMC_LDQM2_GPIO_CLK()      __GPIOI_CLK_ENABLE()
 #define FMC_LDQM2_GPIO_PIN        GPIO_PIN_4
-/** @defgroup STM32429 SDRAMº¯Êý
+/** @defgroup STM32H750 SDRAMº¯Êý
   * @{
   */ 
 void  SDRAM_Init(void);
