@@ -94,7 +94,7 @@ int main(void)
 	//初始化 I2C
 	I2cMaster_Init(); 
 
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
 
 	printf("\r\n 这是一个I2C外设(MPU6050)读写测试例程 \r\n");
 

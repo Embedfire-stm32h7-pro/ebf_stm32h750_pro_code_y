@@ -49,7 +49,7 @@ int main(void)
 	LED_GPIO_Config();
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
+	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
 
 	printf("\r\n 这是一个I2C外设(AT24C02)读写测试例程 \r\n");
 
