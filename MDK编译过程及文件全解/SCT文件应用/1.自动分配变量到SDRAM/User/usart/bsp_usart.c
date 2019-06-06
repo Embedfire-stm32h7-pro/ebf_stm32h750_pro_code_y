@@ -64,14 +64,13 @@ void UARTx_Config(void)
 	UartHandle.Init.Parity = UART_PARITY_NONE;
 	UartHandle.Init.Mode = UART_MODE_TX_RX;
 	HAL_UART_Init(&UartHandle);
-
 }
 
 ///重定向c库函数printf到串口USARTx，重定向后可使用printf函数
 int fputc(int ch, FILE *f)
 {
     /* 发送一个字节数据到串口USARTx */
-	HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
+	HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 1000);
 	return (ch);
 }
 
@@ -82,7 +81,7 @@ int fgetc(FILE *f)
 	/* 等待串口输入数据 */
 	while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) == RESET);
 	__HAL_UART_CLEAR_OREFLAG(&UartHandle);
-	HAL_UART_Receive(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
+	HAL_UART_Receive(&UartHandle, (uint8_t *)&ch, 1, 1000);
 	return (ch);
 }
 /*********************************************END OF FILE**********************/
