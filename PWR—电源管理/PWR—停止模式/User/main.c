@@ -34,7 +34,7 @@ int main(void)
 	uint32_t PCLK2_Frequency=0;
 	uint32_t SYSCLK_Source=0;
 	
-	/* 初始化系统时钟为216MHz */
+	/* 初始化系统时钟为400MHz */
 	SystemClock_Config();
 	/* 初始化LED */
 	LED_GPIO_Config();	

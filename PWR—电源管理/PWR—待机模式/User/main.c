@@ -4,11 +4,11 @@
   * @author  fire
   * @version V1.0
   * @date    2016-xx-xx
-  * @brief   野火H743 PWR—待机模式
+  * @brief   野火H750 PWR—待机模式
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火  STM32 H743 开发板
+  * 实验平台:野火  STM32 H750 开发板
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -36,8 +36,8 @@ int main(void)
 	/*初始化按键，不需要中断,仅初始化KEY2即可，只用于唤醒的PA0引脚不需要这样初始化*/
 	Key_GPIO_Config(); 
 	
-	printf("\r\n 欢迎使用野火 STM32H743 开发板。\r\n");
-	printf("\r\n 野火H743 待机模式例程\r\n");
+	printf("\r\n 欢迎使用野火 STM32H750 开发板。\r\n");
+	printf("\r\n 野火H750 待机模式例程\r\n");
 	
 	printf("\r\n 实验说明：\r\n");
 
