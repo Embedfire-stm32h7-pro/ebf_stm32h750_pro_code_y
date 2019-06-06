@@ -25,36 +25,33 @@
 void Delay(__IO uint32_t nCount); 
 
 void SDRAM_Check(void);
+
 uint32_t RadomBuffer[10000];
-
 uint32_t ReadBuffer[10000];
-
-
 
 uint32_t *pSDRAM;
 
-long long count=0,sdram_count=0;
 RNG_HandleTypeDef hrng;
-
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{  
+{
+	long long count=0;
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
   
-    /* 默认不配置 MPU，若需要更高性能，当配置 MPU 后，使用 
+   /* 默认不配置 MPU，若需要更高性能，当配置 MPU 后，使用 
    DMA 时需注意 Cache 与 内存内容一致性的问题，
    具体注意事项请参考配套教程的 MPU 配置相关章节 */
 //  Board_MPU_Config(0, MPU_Normal_WT, 0xD0000000, MPU_32MB);
 //  Board_MPU_Config(1, MPU_Normal_WT, 0x24000000, MPU_512KB);
   
   SCB_EnableICache();    // 使能指令 Cache
-//  SCB_EnableDCache();    // 使能数据 Cache
+	SCB_EnableDCache();    // 使能数据 Cache
   
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
@@ -97,8 +94,8 @@ int main(void)
 
 void SDRAM_Check(void)
 {
+	long long count=0,sdram_count=0;
   pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
-	count=0;
 	printf("开始写入SDRAM\r\n");
 	for(sdram_count=0;sdram_count<SDRAM_SIZE/4;sdram_count++)
 	{
