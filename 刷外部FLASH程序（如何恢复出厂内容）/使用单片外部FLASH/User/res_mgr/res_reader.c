@@ -3,7 +3,7 @@
   * @file    bsp_led.c
   * @author  fire
   * @version V1.0
-  * @date    2015-xx-xx
+  * @date    2019-xx-xx
   * @brief   led应用函数接口
   ******************************************************************************
   * @attention

@@ -3,7 +3,7 @@
   * @file    bsp_sai.c
   * @author  fire
   * @version V1.0
-  * @date    2015-xx-xx
+  * @date    2019-xx-xx
   * @brief   按键应用bsp（扫描模式）
   ******************************************************************
   * @attention
