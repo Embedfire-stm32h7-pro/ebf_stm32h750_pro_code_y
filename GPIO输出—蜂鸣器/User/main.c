@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H750开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -36,9 +36,8 @@ int main(void)
 	/* 控制IO */
 	while (1)
 	{
-        BEEP_TOGGLE;
+    BEEP_TOGGLE;
 		Delay(0xFFFFFF);
-
 	}
 }
 
