@@ -37,6 +37,8 @@ int main(void)
 {   
 	/* 系统时钟初始化成400 MHz */
 	SystemClock_Config();
+	/* 开启I-Cache */
+	SCB_EnableICache();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 初始化调试串口，一般为串口1 */
