@@ -44,7 +44,6 @@ LCD_DrawPropTypeDef DrawProp[MAX_LAYER_NUMBER];
  * @retval None
  */
 
-
 /*根据液晶数据手册的参数配置*/
 #define HBP  46		//HSYNC后的无效像素
 #define VBP  23		//VSYNC后的无效行数

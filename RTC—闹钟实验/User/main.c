@@ -26,8 +26,6 @@
 #include "./RTC/bsp_rtc.h"
 void Delay(__IO uint32_t nCount); 
 
-void LCD_Test(void);
-
 /**
   * @brief  主函数
   * @param  无
@@ -37,6 +35,8 @@ int main(void)
 {   
 	/* 系统时钟初始化成400 MHz */
 	SystemClock_Config();
+	/* 开启I-Cache */
+	SCB_EnableICache();
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	/* 蜂鸣器端口初始化 */	
