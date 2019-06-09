@@ -3,7 +3,7 @@
   * @file    bsp_can.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   can驱动（回环模式）
   ******************************************************************************
   * @attention

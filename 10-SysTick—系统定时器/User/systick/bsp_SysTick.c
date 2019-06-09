@@ -3,7 +3,7 @@
   * @file    bsp_SysTick.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   SysTick 系统滴答时钟10us中断函数库,中断时间可自由配置，
   *          常用的有 1us 10us 1ms 中断。     
   ******************************************************************************
