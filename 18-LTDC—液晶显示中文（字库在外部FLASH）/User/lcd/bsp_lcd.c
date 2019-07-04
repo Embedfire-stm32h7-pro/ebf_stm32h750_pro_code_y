@@ -3,7 +3,7 @@
   * @file    bsp_lcd.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   LCD应用函数接口，支持ARGB888/RGB888/RGB565/ARGB4444/ARGB1555 (不含中文显示)
   ******************************************************************************
   * @attention

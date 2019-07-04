@@ -3,7 +3,7 @@
   * @file    bsp_exti.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   I/O线中断应用bsp
   ******************************************************************************
   * @attention

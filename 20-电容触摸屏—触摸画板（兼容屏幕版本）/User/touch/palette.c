@@ -3,7 +3,7 @@
   * @file    palette.c
   * @author  fire
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   ´¥Ãþ»­°åÓ¦ÓÃº¯Êý
   ******************************************************************************
   * @attention

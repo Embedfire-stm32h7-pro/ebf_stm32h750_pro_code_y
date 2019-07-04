@@ -3,7 +3,7 @@
   * @file    bsp_touchpad.c
   * @author  fire
   * @version V1.0
-  * @date    2015-xx-xx
+  * @date    2019-xx-xx
   * @brief   电容按键应用函数接口
   ******************************************************************************
   * @attention

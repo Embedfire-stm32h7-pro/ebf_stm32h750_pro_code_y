@@ -3,7 +3,7 @@
   * @file    bsp_i2c_ee.c
   * @author  STMicroelectronics
   * @version V1.0
-  * @date    2016-xx-xx
+  * @date    2019-xx-xx
   * @brief   电容触摸屏的专用iic驱动
   ******************************************************************************
   * @attention

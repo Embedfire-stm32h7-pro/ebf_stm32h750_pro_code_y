@@ -3,7 +3,7 @@
   * @file    bsp_sdram.c
   * @author  fire
   * @version V1.0
-  * @date    2015-xx-xx
+  * @date    2019-xx-xx
   * @brief   sdram应用函数接口
   ******************************************************************************
   * @attention
@@ -307,7 +307,7 @@ static void SDRAM_InitSequence(void)
 	/* 刷新周期=64ms/4096行=15.625us */
 	/* COUNT=(15.625us x Freq) - 20 */
 	/* 设置自刷新速率 */
-	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855); 
+	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 824); 
 }
 
 

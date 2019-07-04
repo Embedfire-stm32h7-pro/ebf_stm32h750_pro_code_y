@@ -3,7 +3,7 @@
   * @file    bsp_basic_tim.c
   * @author  STMicroelectronics
   * @version V1.0
-  * @date    2015-xx-xx
+  * @date    2019-xx-xx
   * @brief   高级定时器互补输出
   ******************************************************************************
   * @attention

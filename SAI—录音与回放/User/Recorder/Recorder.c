@@ -3,7 +3,7 @@
 * @file    recorder.c
 * @author  fire
 * @version V1.0
-* @date    2015-xx-xx
+* @date    2019-xx-xx
 * @brief   WM8978Â¼Òô¹¦ÄÜ²âÊÔ
 ******************************************************************************
 * @attention
