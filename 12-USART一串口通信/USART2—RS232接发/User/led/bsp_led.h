@@ -16,7 +16,7 @@
 #define LED2_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
 
 //B 蓝色灯
-#define LED3_PIN                  GPIO_PIN_3                
+#define LED3_PIN                  GPIO_PIN_3                 
 #define LED3_GPIO_PORT            GPIOA                       
 #define LED3_GPIO_CLK_ENABLE()    __GPIOA_CLK_ENABLE()
 
@@ -37,15 +37,12 @@
 #define LED2(a)	HAL_GPIO_WritePin(LED2_GPIO_PORT,LED2_PIN,a)
 
 
-#define LED3(a)	HAL_GPIO_WritePin(LED2_GPIO_PORT,LED3_PIN,a)
-
-
-//#define LED4(a)	HAL_GPIO_WritePin(LED4_GPIO_PORT,LED4_PIN,a)
+#define LED3(a)	HAL_GPIO_WritePin(LED3_GPIO_PORT,LED3_PIN,a)
 
 
 /* 直接操作寄存器的方法控制IO */
-#define	digitalHi(p,i)				{p->BSRRL=i;}			  //设置为高电平		
-#define digitalLo(p,i)				{p->BSRRH=i;}				//输出低电平
+#define	digitalHi(p,i)				{p->BSRR=i;}			  //设置为高电平		
+#define digitalLo(p,i)				{p->BSRR=i<<16;}				//输出低电平
 #define digitalToggle(p,i)		{p->ODR ^=i;}			//输出反转状态
 
 
