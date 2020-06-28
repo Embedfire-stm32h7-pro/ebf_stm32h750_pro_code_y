@@ -38,8 +38,8 @@ int main(void)
 	/*PB0 BSRR寄存器的 BR0置1，使引脚输出低电平*/
 	GPIOB_BSRRH |= 1;
 	
-	/*PH10 BSRR寄存器的 BS10置1，使引脚输出高电平*/
-	//GPIOH_BSRRL |= (1<<10);
+	/*PB0 BSRR寄存器的 BS0置1，使引脚输出高电平*/
+	GPIOB_BSRRL |= 1;
 
 	while(1);
 

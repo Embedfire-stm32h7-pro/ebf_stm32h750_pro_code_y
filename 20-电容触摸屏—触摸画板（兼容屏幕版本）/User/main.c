@@ -55,8 +55,8 @@ int main(void)
   
 	/* 配置串口1为：115200 8-N-1 */
 	DEBUG_USART_Config();		
-	printf("\r\n欢迎使用野火STM32H743开发板。\r\n");		 
-	printf("\r\n野火STM32H743 触摸画板测试例程\r\n");
+	printf("\r\n欢迎使用野火STM32H750开发板。\r\n");		 
+	printf("\r\n野火STM32H750 触摸画板测试例程\r\n");
   /* 初始化触摸屏 */
   GTP_Init_Panel(); 
 	/* LCD 端口初始化 */ 
