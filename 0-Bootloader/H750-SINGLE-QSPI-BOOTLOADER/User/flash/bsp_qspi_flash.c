@@ -114,9 +114,9 @@ void QSPI_FLASH_Init(void)
 	/*时钟模式选择模式0，nCS为高电平（片选释放）时，CLK必须保持低电平*/
 	QSPIHandle.Init.ClockMode = QSPI_CLOCK_MODE_0;
 	/*根据硬件连接选择第一片Flash*/
-	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_2;
+	QSPIHandle.Init.FlashID = QSPI_FLASH_ID_1;
   /*使能双闪存模式*/
-	QSPIHandle.Init.DualFlash= QSPI_DUALFLASH_ENABLE;
+	QSPIHandle.Init.DualFlash= QSPI_DUALFLASH_DISABLE;
 	HAL_QSPI_Init(&QSPIHandle);
 	/*初始化QSPI接口*/
 	BSP_QSPI_Init();

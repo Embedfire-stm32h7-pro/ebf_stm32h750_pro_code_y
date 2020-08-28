@@ -155,7 +155,7 @@ int main(void)
   JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS + 4));
   __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
   JumpToApplication();
-
+  printf("STM32H7启动引导程序运行中。。。\r\n");
   /* We should never get here as execution is now on user application */
   while(1)
   {
