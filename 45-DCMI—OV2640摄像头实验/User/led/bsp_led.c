@@ -8,7 +8,7 @@
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H750开发板 
+  * 实验平台:野火 STM32H750 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -56,7 +56,6 @@ void LED_GPIO_Config(void)
 	HAL_GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStruct);	
 
 	/*关闭RGB灯*/
-	LED_RGBOFF;
-		
+	LED_RGBOFF;	
 }
 /*********************************************END OF FILE**********************/

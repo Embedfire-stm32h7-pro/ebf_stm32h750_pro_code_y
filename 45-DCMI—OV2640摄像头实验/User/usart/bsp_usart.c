@@ -3,7 +3,7 @@
   * @file    bsp_debug_usart.c
   * @author  fire
   * @version V1.0
-  * @date    2019-xx-xx
+  * @date    2016-xx-xx
   * @brief   使用串口2，重定向c库printf函数到usart端口
   ******************************************************************************
   * @attention

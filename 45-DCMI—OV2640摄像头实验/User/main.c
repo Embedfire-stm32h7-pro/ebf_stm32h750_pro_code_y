@@ -3,8 +3,8 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2018-xx-xx
-  * @brief   LTDC—液晶显示中文
+  * @date    2019-xx-xx
+  * @brief   OV2640摄像头实验
   ******************************************************************
   * @attention
   *
@@ -55,7 +55,7 @@ int main(void)
 	printf("\r\n 欢迎使用野火  STM32 H750 开发板。\r\n");		 
 	printf("\r\n野火STM32H750 OV2640摄像头测试例程\r\n");
 	/*蓝灯亮，表示正在读写SDRAM测试*/
-	//LED_BLUE;
+	LED_BLUE;
 	/* LCD 端口初始化 */ 
 	LCD_Init();
 	/* LCD 第一层初始化 */ 
@@ -82,7 +82,7 @@ int main(void)
 	LCD_SetTransparency(1, 255);
 	
 	LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
-	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
+	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" mode:UXGA 800x480");
 	CAMERA_DEBUG("STM32H750 DCMI 驱动OV2640例程");
 		
 	//初始化 I2C
@@ -99,7 +99,7 @@ int main(void)
 	else
 	{
 		LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
-		LCD_DisplayStringLine_EN_CH(8,(uint8_t*) "         没有检测到OV2640，请重新检查连接。");
+		LCD_DisplayStringLine_EN_CH(8,(uint8_t*) "         no check OV2640，please check the connect。");
 		CAMERA_DEBUG("没有检测到OV2640摄像头，请重新检查连接。");
 		while(1);  
 	}
@@ -142,25 +142,24 @@ int main(void)
 	*            PLL_M                = 5
 	*            PLL_N                = 160
 	*            PLL_P                = 2
-	*            PLL_Q                = 4
+	*            PLL_Q                = 2
 	*            PLL_R                = 2
 	*            VDD(V)               = 3.3
 	*            Flash Latency(WS)    = 4
   * @param  None
   * @retval None
   */
-static void SystemClock_Config(void)
+void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  HAL_StatusTypeDef ret = HAL_OK;
-  
-  /*使能供电配置更新 */
-  MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /* 当器件的时钟频率低于最大系统频率时，电压调节可以优化功耗，
-		 关于系统频率的电压调节值的更新可以参考产品数据手册。  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  /** 启用电源配置更新
+  */
+  HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+  /** 配置主内稳压器输出电压
+  */
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
  
@@ -180,8 +179,7 @@ static void SystemClock_Config(void)
  
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
-  ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  if(ret != HAL_OK)
+  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     while(1) { ; }
   }
@@ -200,12 +198,9 @@ static void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2; 
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2; 
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2; 
-  ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4);
-  if(ret != HAL_OK)
+  if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     while(1) { ; }
   }
 }
-
-
 /****************************END OF FILE***************************/
